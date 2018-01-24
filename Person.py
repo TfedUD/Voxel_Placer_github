@@ -198,6 +198,7 @@ class Person:
         self.activity = self.schedule[time]
 
         # Leaving building [step 1]: update destination
+        # leaving_building
         if self.activity == 'out':
             self.destination = 'ground_floor'
             #print("Destination set to {}".format(self.destination))
@@ -350,15 +351,16 @@ class Person:
         return actitivy_cell_value
 
     def pattern_heirarchy(self):
+        # we are not using this anymore!!!!!!!
         pattern = self.activity_pattern()
         actitivy_cell_value = {}
         # I am setting the values here based on which list the position is in
         # should we do that in the function that reads the matrices?
-        for position in pattern.need():
-            actitivy_cell_value[position] = 2 # make this one 3 later
-
         for position in pattern.desire():
             actitivy_cell_value[position] = 1
+
+        for position in pattern.need():
+            actitivy_cell_value[position] = 2 # make this one 3 later
 
         return actitivy_cell_value
 
@@ -616,9 +618,12 @@ class Person:
         return vectors
 
     # [2]
+    # leaving_building
     def vectors_for_intentional_mov(self):
 
         if self.destination:
+
+
             vectors = self.vectors_toward_a_destination(self.destination)
             self.personal_log.append("These vectors [{}] will take me to my destination [{}]".format(vectors, self.destination))
             return vectors
@@ -661,7 +666,6 @@ class Person:
             # there's not intentional movement
             return False
         """
-        pass
 
 
     # IMPORTANT
