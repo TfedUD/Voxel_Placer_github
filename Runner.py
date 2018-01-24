@@ -135,6 +135,17 @@ while tick < tick_max:
             # the first
             state_of_brain[person.name] = [person.activity] + person.claimed_cells
             #inside_log_dictionary[person.name] = person.personal_log
+        movement_counter = 0
+        for person in people:
+            movement_counter += person.move_check
+
+        if movement_counter == 0:
+            print("I managed to organise in {} iterations".format(evaluation_num))
+            break # this needs to stop the simulation
+        else:
+            pass # continue the loop to for the simulation
+
+
 
 
 

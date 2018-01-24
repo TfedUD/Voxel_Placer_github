@@ -615,11 +615,12 @@ class Person:
 
         if self.movement_vector:
             self.move_according_to(self.movement_vector)
+            self.move_check = 1
             ### added today
             self.movement_history.append(self.movement_vector)
         else:
             self.personal_log.append("DID NOT MOVE!")
-
+            self.move_check = 0
         self.personal_log.append("My Current Position is {}".format(self.position))
         #self.personal_log.append("____________")
 
