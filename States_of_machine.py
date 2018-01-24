@@ -18,9 +18,9 @@ seed = 11
 r.seed(seed)
 
 
-x_s = 33 #28
+x_s = 32 #28
 y_s = 1 #9
-z_s = 33 #28
+z_s = 32 #28
 
 
 # random points generator
