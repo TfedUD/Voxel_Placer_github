@@ -702,9 +702,9 @@ class Person:
         # look for vectors in:
 
         # [1]: stay inside envelope
-        if self.position_inside_envelope_vectors(self.position, self.activity_pattern(), value):
+        if self.position_inside_envelope_vectors(self.position, self.activity_pattern()):
             # move according to that
-            vectors = self.position_inside_envelope_vectors(self.position, self.activity_pattern(), value)
+            vectors = self.position_inside_envelope_vectors(self.position, self.activity_pattern())
             self.personal_log.append("vectors for envelope are [{}]".format(vectors))
 
             my_vector = self.dominant_vector(vectors)
