@@ -661,7 +661,6 @@ class Person:
             # there's not intentional movement
             return False
         """
-        pass
 
 
     # IMPORTANT
