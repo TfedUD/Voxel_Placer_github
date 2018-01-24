@@ -294,6 +294,89 @@ class Person:
         return pattern
 
 
+    # This function takes in the current_cloud and the desire cloud,
+    # And returns the voxels that are on the border of the current_cloud
+    # This funciton represents the gradient of desire functions
+    # To implement this correctly, for every time frame, a new layer of desire
+    # voxels needs to be added to the current_cloud if there are no conflicts
+    
+    def find_immmediate_border(self, current_cloud,target_cloud):
+        # both current_cloud and target_cloud are a list of positions
+        # returns the positions of the boundary positions of self.
+        border_voxels = []
+        target_positions_without_current_positions = []
+        check_counter = 0
+
+        # 1. for every point in target cloud:
+        for position in target_cloud:
+            # find all the points that are not inside the current_cloud
+            if position not in current_cloud:
+            # Append these points to a list "target_cloud_sans_current" current cloud positions
+                target_positions_without_current_positions.append(position)
+        #print(target_positions_without_current_positions)
+
+        # 2. Here is where we need to check every point in in target_cloud_sans_current
+        for position_target in target_positions_without_current_positions:
+        # 3. we have have a condition that each point needs to satisfy
+            for position_current in current_cloud:
+                counter_x = 0
+                counter_y  = 0
+                counter_z = 0
+                # x conditions
+                if position_current[0] == position_target[0] \
+                or position_current[0] + 1 == position_target[0] \
+                or position_current[0] - 1 == position_target[0]:
+                    counter_x += 1
+
+                    #print("counter_x",counter_x)
+                # y conditions
+                if position_current[1] == position_target[1] \
+                or position_current[1] + 1 == position_target[1] \
+                or position_current[1] - 1 == position_target[1]:
+                    counter_y += 1
+                    #print("counter_y",counter_y)
+                # z conditions
+                if position_current[2] == position_target[2] \
+                or position_current[2] + 1 == position_target[2] \
+                or position_current[2] - 1 == position_target[2]:
+                    counter_z += 1
+
+                if counter_x + counter_y + counter_z == 3:
+                    border_voxels.append(position_target)
+
+
+
+        border_voxels = list(set(border_voxels))
+
+        return border_voxels
+
+
+    def gradual_pattern_heirarchy(self):
+        # wehere to update this thing!!!
+
+        current_cloud = self.claimed_cells + self.need()
+        current_cloud = list(set(current_cloud))
+
+        target_cloud = self.desire()
+        extra_layer = self.find_immmediate_border(current_cloud,target_cloud)
+
+        all_to_claim = current_cloud + extra_layer
+        # what are we going to ask the envelope for is the current cloud (claimed)
+        # and the extra layer
+        # and they should be in pattern heiracy format
+        # so the envelope know where to place 2 and 1
+
+        # we need to sort positions in all_to_claims to need and desire
+        actitivy_cell_value = {}
+
+        for position in all_to_claim:
+            if position in self.need():
+                actitivy_cell_value[position] = 2
+            if position in self.desire():
+                actitivy_cell_value[position] = 1
+
+        return actitivy_cell_value
+
     def pattern_heirarchy(self):
         pattern = self.activity_pattern()
         actitivy_cell_value = {}
