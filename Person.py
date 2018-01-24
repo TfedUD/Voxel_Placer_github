@@ -51,7 +51,10 @@ class Person:
         self.movement_vector = None
 
         self.movement_history = []
-        self.notification = []
+        self.notification_inbox = []
+        self.vectors_away_from_neighbors_NEED = []
+        self.vectors_away_from_neighbors_DESIRE = []
+        self.vectors_away_from_neighbors_BOTH = []
 
     def introduce_person(self):
 
