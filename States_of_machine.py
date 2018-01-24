@@ -44,7 +44,7 @@ mytick = 105
 #print(points)
 #points = [ (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2) ]
 factor = 1
-ticks = 2 * factor
+ticks = 50 * factor
 
 ####################################################
 
@@ -130,7 +130,7 @@ for tick in range(ticks):
     # every person will evaluate its current position
     # if it needs to move it will return a movement vector
     for person in people_classes:
-        person.evaluate_position("need")
+        person.evaluate_position("desire")
 
 
     # [STEP 4]: outputting

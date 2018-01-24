@@ -11,7 +11,7 @@ class Envelope:
         self.x_span = x_span
         self.y_span = y_span
         self.z_span = z_span
-        self.cells = self.create_cells() # a dictionary 
+        self.cells = self.create_cells() # a dictionary
 
 
     def create_cells(self):
@@ -90,7 +90,7 @@ class Envelope:
             person_need = person.need()
             self.num_of_needed_cells += len(person_need)
 
-            pattern_heirarchy = person.pattern_heirarchy()
+            pattern_heirarchy = person.gradual_pattern_heirarchy()
 
             for key in pattern_heirarchy:
                 ###### I overlooked ==

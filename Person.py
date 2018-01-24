@@ -104,43 +104,12 @@ class Person:
 
     def need(self):
 
-        # initiating an attributes for person called need
-        # the problem with initiateing an attribute within a method and not inside __init__
-        # is the fact that you need to run this function first to create the attribute!
-        # so the attribute is useless without the function itself!
-
-        # don't you ever call a function and an attribute with the same name!!
-        # specially when you create the attribute within the function
-        # like what you're doing here!
-        # if you called to attribute before the function it will return the method name
-        # if you called the function the first time and the attribute was initiated
-        # you can't call the function again because the attribute took it's name
-        # in this case this is the Error returned:
-        # TypeError: 'list' object is not callable
-        # because the attribute was a list and I put () after it to call the function
-
-        self.need_cells = []
-        heirarchy_dictionary = self.pattern_heirarchy()
-        for position in heirarchy_dictionary:
-            if heirarchy_dictionary[position] == 3: # make it 3 later
-                self.need_cells.append(position)
-        # OUTPUT: positions (x,y) of needed voxels
-
-        return self.need_cells
+        return self.pattern.need()
 
 
     def desire(self):
-        # initiating an attributes for person called desire
 
-        #self.desire_cells = []
-        desire_cells = []
-        heirarchy_dictionary = self.pattern_heirarchy()
-        for position in heirarchy_dictionary:
-            if heirarchy_dictionary[position] == 1:
-                self.desire_cells.append(position)
-        # OUTPUT: positions (x,y) of desire voxels
-        #return self.desire_cells
-        return desire_cells
+        return self.pattern.desire()
 
 
     def need_and_desire(self):
@@ -299,7 +268,7 @@ class Person:
     # This funciton represents the gradient of desire functions
     # To implement this correctly, for every time frame, a new layer of desire
     # voxels needs to be added to the current_cloud if there are no conflicts
-    
+
     def find_immmediate_border(self, current_cloud,target_cloud):
         # both current_cloud and target_cloud are a list of positions
         # returns the positions of the boundary positions of self.
