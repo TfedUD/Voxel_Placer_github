@@ -2,7 +2,6 @@
 from Envelope_Cell import Envelope_Cell
 
 ###################################################################
-# kdjf ;kj 
 
 class Envelope:
 
