@@ -22,5 +22,3 @@ class Envelope_Cell:
         self.state = state
 
 ###################################################################
-
-print (‘/x1b[0;32;48m’ + “Succesfully Finished” + ‘/x1b[0m’)

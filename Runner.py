@@ -193,7 +193,7 @@ for line in brain_personal_logs:
     print(line)
 """
 
-print (‘/x1b[0;32;48m’ + “Succesfully Finished” + ‘/x1b[0m’)
+
 
 
 for t in brain_personal_logs['person_1']:
