@@ -13,9 +13,9 @@ z_s = 30 #28
 seed = 11
 r.seed(seed)
 ########## THE RUNNER INPUTS
-tick_start = 80
+tick_start = 85
 tick = tick_start # starting frame of render
-tick_max = 85 # ending frame -# ticks and tick_max are the same
+tick_max = 90 # ending frame -# ticks and tick_max are the same
 evaluation_num = 0 # it will be reset to 0 every tick iteration later
 evaluation_max = 100 # how many times the brain should try to compute positions
 
@@ -140,9 +140,9 @@ while tick < tick_max:
         for person in people:
             movement_counter += person.move_check
 
-        
+
         if movement_counter == 0:
-            print("I managed to organise in {} iterations".format(evaluation_num))
+            print("I managed to organise in {} iterations".format(evaluation_num+1))
             break # this needs to stop the simulation
         else:
             pass # continue the loop to for the simulation
@@ -192,6 +192,9 @@ for t in organized_states:
 for line in brain_personal_logs:
     print(line)
 """
+
+print (‘/x1b[0;32;48m’ + “Succesfully Finished” + ‘/x1b[0m’)
+
 
 for t in brain_personal_logs['person_1']:
     print(t)
