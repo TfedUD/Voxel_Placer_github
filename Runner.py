@@ -15,7 +15,7 @@ r.seed(seed)
 ########## THE RUNNER INPUTS
 tick_start = 80
 tick = tick_start # starting frame of render
-tick_max = 90 # ending frame -# ticks and tick_max are the same
+tick_max = 85 # ending frame -# ticks and tick_max are the same
 evaluation_num = 0 # it will be reset to 0 every tick iteration later
 evaluation_max = 100 # how many times the brain should try to compute positions
 
@@ -186,7 +186,7 @@ for t in brain_personal_logs['person_1']:
 ###########################################
 #### writing the file
 
-both_names = "e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
+both_names = "__Final_txt_output/rhino_e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -214,3 +214,17 @@ file.write("\n")
 file.write("    return dict")
 file.write("\n")
 file.write("b_logs = logs")
+
+
+
+###########################################
+#### writing the file for c4d
+
+c4d_name = "__Final_txt_output/c4d_e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
+#### writing the dictionary into a text file!
+
+#states_file_name = both_names + "_states_dictionary.txt"
+
+file = open(c4d_name,"w")
+
+file.write(str(brain_states))
