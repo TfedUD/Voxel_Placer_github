@@ -4,6 +4,12 @@ from New_Patterns_Dictionary import Activity_Pattern
 
 #update test
 
+
+need_value = 100
+desire_value = 1
+#conflict_value = 5
+
+
 ####################################################
 
 
@@ -343,10 +349,10 @@ class Person:
         actitivy_cell_value = {}
 
         for position in all_to_claim:
-            if position in self.need():
-                actitivy_cell_value[position] = 2
             if position in self.desire():
-                actitivy_cell_value[position] = 1
+                actitivy_cell_value[position] = desire_value
+            if position in self.need():
+                actitivy_cell_value[position] = need_value
 
         return actitivy_cell_value
 
@@ -357,10 +363,10 @@ class Person:
         # I am setting the values here based on which list the position is in
         # should we do that in the function that reads the matrices?
         for position in pattern.desire():
-            actitivy_cell_value[position] = 1
+            actitivy_cell_value[position] = desire_value
 
         for position in pattern.need():
-            actitivy_cell_value[position] = 2 # make this one 3 later
+            actitivy_cell_value[position] = need_value # make this one 3 later
 
         return actitivy_cell_value
 
@@ -765,6 +771,7 @@ class Person:
         # you take one step every iteration so we will use elif
         # leaving_building
 
+
         elif intentional_vectors:
 
             my_vector = self.best_vector(intentional_vectors)
@@ -1016,9 +1023,11 @@ class Person:
             #cells is attribute of envelope which is a dict of all envelope cells
             if position in self.envelope.cells and position not in self.claimed_cells:
                 envelope_cell = self.envelope.cells[position]
+                # check_me: nothing called unknown anymore
                 if envelope_cell.state == "Unknown":
                     #self.personal_log.append("Position {} has a conflict and will cost 2".format(position))
-                    consuming_counter += 2 # not sure about that
+                    # check_me : we need to different conflict types
+                    consuming_counter += 5 # not sure about that
                     #self.personal_log.append("This conflict position updated the counter to {}".format(consuming_counter))
                 else:
                     consuming_counter += envelope_cell.state
@@ -1045,6 +1054,7 @@ class Person:
             #cells is attribute of envelope which is a dict of all envelope cells
             if position in self.envelope.cells:
                 envelope_cell = self.envelope.cells[position]
+                # check_me : what is this 3 here?
                 if envelope_cell.state == "conflict_need" or envelope_cell.state == 3:
                     return False
                     # need to check conflict between other people in circulation
@@ -1245,7 +1255,7 @@ class Person:
 
 
                 # need conflicts
-                if conflict_value == 2:
+                if conflict_value == 100:
                     for person in conflicting_people:
                         if person.name != self.name:
                             self.neighbors_in_need.append(person)

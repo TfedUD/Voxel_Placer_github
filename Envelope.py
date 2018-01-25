@@ -292,8 +292,10 @@ class Envelope:
                     for person in conflicting_people:
                         names.append(person.name)
                     """
+                    # check_me: is this correct?
                     cells_in_conflict[cell_key] = [max_priority, conflicting_people]
-                    cell_key.state = "Unknown"
+                    #cell_key.state = "Unknown"
+                    cell_key.state = max_priority * len(conflicting_people)
 
                     ###
                     ### what does this part do?

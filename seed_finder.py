@@ -130,8 +130,20 @@ def run_states(seed):
         ##### outputting conflicts number
 
     conflicts_num = len(envelope.cells_in_conflict())
+    conflict_dict = e.cells_in_conflict()
+    #conflict_list = []
+    conflict_list_need = []
+    conflict_list_desire = []
 
-    return conflicts_num
+    for key in conflict_dict:
+        if conflict_dict[key][0] == 100:
+            conflict_list_need.append(key.position)
+
+    conflict_need_number = len(conflict_list_need)
+
+    #return conflicts_num
+    return conflict_need_number
+
 
 
 

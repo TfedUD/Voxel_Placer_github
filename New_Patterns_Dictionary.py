@@ -67,6 +67,7 @@ class Activity_Pattern:
     def desire(self):
 
         desire = []
+
         rhino_positions = desire_dictionary[self.activity]
         need_positions = self.need()
         only_desire = [position for position in rhino_positions if position not in need_positions]
@@ -84,9 +85,6 @@ class Activity_Pattern:
             desire.append(new_position)
 
         return desire
-
-
-
 
 
 

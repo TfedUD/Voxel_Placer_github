@@ -27,7 +27,7 @@ x_s = 34 #28
 y_s = 1 #9
 z_s = 34 #28
 
-value = "need"  # "desire"
+value = "desire"  # "desire"
 
 # random points generator
 points = []
@@ -117,9 +117,11 @@ for tick in range(ticks):
     # [STEP 2]: Placing the poeple in the envelope
     # Update the envelope and claimed cells by placing people
     e.place_people(people_classes)
+    """
     for line in e.evaluate_states():
         print(line)
     print("___________")
+    """
     #print("num_of_needed_cells: " , e.num_of_needed_cells)
     #print("num_of_claimed_cells", )
     #print("num_of_empty_cells", len(e.empty_cells()))
@@ -148,13 +150,14 @@ for tick in range(ticks):
     inside_dictionary = states_of_machine[tick]
     #inside_log_dictionary = all_personal_logs[tick]
 
+
     conflict_dict = e.cells_in_conflict()
     #conflict_list = []
     conflict_list_need = []
     conflict_list_desire = []
 
     for key in conflict_dict:
-        if conflict_dict[key][0] == 2:
+        if conflict_dict[key][0] == 100:
             conflict_list_need.append(key.position)
         if conflict_dict[key][0] == 1:
             conflict_list_desire.append(key.position)
@@ -219,6 +222,9 @@ file = open(c4d_name,"w")
 file.write(str(states_of_machine))
 
 ####################################################
+
+
+"""
 for i in range(5):
     print("++++++++++++++++++++")
     print (i)
@@ -227,9 +233,36 @@ for i in range(5):
         print(line)
 
 
+
+
 for person in people:
     if person.name == "person_15":
-        print(person.position)
+        print(person.pattern_heirarchy())
 
-    if person.name == "person_17":
-        print(person.position)
+
+need_and_desire = {(8, 0, 29): 2, (7, 0, 29): 2, (9, 0, 29): 2, (9, 0, 28): 2, (9, 0, 27): 2, (8, 0, 28): 2, (8, 0, 27): 2, (7, 0, 28): 2, (7, 0, 27): 2, (6, 0, 29): 2, (6, 0, 28): 2, (6, 0, 27): 1, (5, 0, 29): 2, (5, 0, 28): 1, (5, 0, 27): 1, (13, 0, 29): 1, (12, 0, 29): 2, (14, 0, 29): 1, (14, 0, 28): 1, (14, 0, 27): 1, (13, 0, 28): 1, (13, 0, 27): 1, (12, 0, 28): 1, (12, 0, 27): 1, (11, 0, 29): 2, (11, 0, 28): 2, (11, 0, 27): 2, (10, 0, 29): 2, (10, 0, 28): 2, (10, 0, 27): 2, (15, 0, 29): 1, (15, 0, 28): 1, (15, 0, 27): 1, (4, 0, 32): 2, (4, 0, 31): 2, (4, 0, 30): 2, (4, 0, 33): 1, (8, 0, 32): 2, (7, 0, 32): 2, (9, 0, 32): 2, (9, 0, 31): 2, (9, 0, 30): 2, (8, 0, 31): 2, (8, 0, 30): 2, (7, 0, 31): 2, (7, 0, 30): 2, (6, 0, 32): 2, (6, 0, 31): 2, (6, 0, 30): 2, (5, 0, 32): 2, (5, 0, 31): 2, (5, 0, 30): 2, (13, 0, 32): 1, (12, 0, 32): 2, (14, 0, 32): 1, (14, 0, 31): 1, (14, 0, 30): 1, (13, 0, 31): 2, (13, 0, 30): 2, (12, 0, 31): 2, (12, 0, 30): 2, (11, 0, 32): 2, (11, 0, 31): 2, (11, 0, 30): 2, (10, 0, 32): 2, (10, 0, 31): 2, (10, 0, 30): 2, (15, 0, 32): 1, (15, 0, 31): 1, (15, 0, 30): 1, (9, 0, 33): 2, (8, 0, 33): 2, (7, 0, 33): 1, (6, 0, 33): 2, (5, 0, 33): 2, (14, 0, 33): 1, (13, 0, 33): 1, (12, 0, 33): 1, (11, 0, 33): 2, (10, 0, 33): 2, (15, 0, 33): 1, (3, 0, 30): 2, (3, 0, 32): 2, (3, 0, 31): 2}
+
+
+
+need_no_desire = {(13, 0, 31): 2, (13, 0, 30): 2, (12, 0, 29): 2, (12, 0, 32): 2, (12, 0, 30): 2, (12, 0, 31): 2, (11, 0, 28): 2, (11, 0, 27): 2, (11, 0, 33): 2, (11, 0, 29): 2, (11, 0, 32): 2, (11, 0, 31): 2, (11, 0, 30): 2, (10, 0, 28): 2, (10, 0, 27): 2, (10, 0, 33): 2, (10, 0, 29): 2, (10, 0, 30): 2, (10, 0, 32): 2, (10, 0, 31): 2, (9, 0, 28): 2, (9, 0, 27): 2, (9, 0, 33): 2, (9, 0, 30): 2, (9, 0, 29): 2, (9, 0, 32): 2, (9, 0, 31): 2, (8, 0, 28): 2, (8, 0, 27): 2, (8, 0, 33): 2, (8, 0, 30): 2, (8, 0, 29): 2, (8, 0, 32): 2, (8, 0, 31): 2, (7, 0, 28): 2, (7, 0, 27): 2, (7, 0, 30): 2, (7, 0, 29): 2, (7, 0, 32): 2, (7, 0, 31): 2, (6, 0, 28): 2, (6, 0, 29): 2, (6, 0, 33): 2, (6, 0, 30): 2, (6, 0, 32): 2, (6, 0, 31): 2, (5, 0, 33): 2, (5, 0, 29): 2, (5, 0, 32): 2, (5, 0, 31): 2, (5, 0, 30): 2, (4, 0, 30): 2, (4, 0, 32): 2, (4, 0, 31): 2, (3, 0, 30): 2, (3, 0, 32): 2, (3, 0, 31): 2}
+
+
+for key in need_no_desire:
+    if key not in need_and_desire:
+        print(key)
+        print("something is wrong")
+
+for key in need_and_desire:
+    if key not in need_no_desire:
+        print(key)
+        print(need_and_desire[key])
+"""
+
+print(envelope.cells_in_conflict())
+for cell in envelope.cells_in_conflict():
+    print( "State of cell in conflict" ,cell.state)
+print("Attr", envelope.cells_in_conflict_attr)
+
+for key in envelope.cells:
+    cell = envelope.cells[key]
+    print(key, ": ", cell.state)
