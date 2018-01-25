@@ -179,7 +179,7 @@ both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/rhino_tick_{}
 
 file = open(both_names,"w")
 
-file.write("#"+both_names + "states")
+#file.write("#"+both_names + "states")
 file.write("\n")
 file.write("def states():")
 file.write("\n")
@@ -206,7 +206,7 @@ file.write("b_logs = logs")
 
 # writing files for c4d
 
-c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+#c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 
@@ -214,3 +214,6 @@ file = open(c4d_name,"w")
 file.write(str(states_of_machine))
 
 ####################################################
+for i in range(50):
+    print (i)
+    print(all_personal_logs["person_15"][i])
