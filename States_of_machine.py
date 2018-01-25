@@ -2,6 +2,11 @@ from Person import Person
 from Envelope import Envelope
 from Schedule import people_dictionary
 import random as r
+import time
+
+timestr = time.strftime("%Y%m%d-%H%M")
+#print(timestr)
+
 
 ###################################################################
 # these are from New_Patterns_Dictionary
@@ -14,13 +19,13 @@ import random as r
 
 
 # INPUT
-seed = 11
+seed = 51
 r.seed(seed)
 
 
-x_s = 32 #28
+x_s = 34 #28
 y_s = 1 #9
-z_s = 32 #28
+z_s = 34 #28
 
 value = "need"  # "desire"
 
@@ -45,7 +50,7 @@ mytick = 105
 #print(points)
 #points = [ (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2) ]
 factor = 1
-ticks = 50 * factor
+ticks = 100 * factor
 
 ####################################################
 
@@ -172,14 +177,14 @@ for person in people:
 
 #### writing the file
 
-both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
 
 file = open(both_names,"w")
 
-#file.write("#"+both_names + "states")
+file.write("#"+both_names + "states")
 file.write("\n")
 file.write("def states():")
 file.write("\n")
@@ -206,7 +211,7 @@ file.write("b_logs = logs")
 
 # writing files for c4d
 
-#c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 
@@ -214,6 +219,17 @@ file = open(c4d_name,"w")
 file.write(str(states_of_machine))
 
 ####################################################
-for i in range(50):
+for i in range(5):
+    print("++++++++++++++++++++")
     print (i)
-    print(all_personal_logs["person_15"][i])
+    all_list = all_personal_logs["person_15"][i]
+    for line in all_list:
+        print(line)
+
+
+for person in people:
+    if person.name == "person_15":
+        print(person.position)
+
+    if person.name == "person_17":
+        print(person.position)

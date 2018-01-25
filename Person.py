@@ -1464,49 +1464,6 @@ class Person:
 
             #pass
 
-    def vectors_from_neighbors_OLD(self):
-        # in order not to run these functions more than one time!!
-        #self.backup_vectors = []
-        all_neighbors = self.neighbors_Iam_conflicting_with()
-
-        # this part needs more evaluation!
-        all_vectors = []
-
-        if all_neighbors:
-            closest_neighbors = self.closest_neighbors(all_neighbors)
-
-            for neighbor in closest_neighbors:
-                vectors = self.vectors_away_from_a_position(neighbor.position)
-                #print("vectors away", vectors)
-                if vectors:
-                    all_vectors += vectors
-
-            if all_vectors:
-                dominant_vectors = self.dominant_items_in_list(all_vectors)
-
-
-                self.backup_vectors = []
-                for vector in all_vectors:
-                    if vector not in dominant_vectors:
-                        self.backup_vectors.append(vector)
-
-
-                self.personal_log.append("These are dominant vectors away from neighbors {}".format(dominant_vectors))
-                self.vectors_away_from_neighbors = dominant_vectors
-                #print("These are dominant vectors away from neighbors {}".format(dominant_vectors))
-                return dominant_vectors
-
-            else:
-                #print("I have neighbors but couldn't return vectors! why?!")
-                return False
-                #print("all_neighbors", all_neighbors)
-                #print("all_vectors", all_vectors)
-
-        else:
-            self.personal_log.append("I don't have a close neighbor at the moment!")
-            #print("I don't have a close neighbor at the moment!")
-            return False
-
 
     def vectors_from_neighbors(self):
 
@@ -1520,13 +1477,20 @@ class Person:
 
         # need
         if self.neighbors_in_need:
+            self.personal_log.append("I recieved these neighbors in need {}".format(self.neighbors_in_need))
             closest_neighbors = self.closest_neighbors(self.neighbors_in_need)
+            self.personal_log.append("this is the closest n in need {}".format(closest_neighbors))
             for neighbor in closest_neighbors:
                 vectors = self.vectors_away_from_a_position(neighbor.position)
+                self.personal_log.append("These are vectors {} away from {}".format(vectors, neighbor.name))
                 #print("vectors away", vectors)
                 if vectors:
+                    self.personal_log.append(" I added these vectors to need vectors".format(vectors))
                     all_need_vectors += vectors
+
+            self.personal_log.append("These are all_need_vectors now {} ".format(all_need_vectors))
             if all_need_vectors:
+                self.personal_log.append("I should be having vectors in need".format(all_need_vectors))
                 self.vectors_away_from_neighbors_NEED = self.dominant_items_in_list(all_need_vectors)
                 self.personal_log.append("These are dominant vectors away from neighbors NEED {}".format(self.vectors_away_from_neighbors_NEED))
 
