@@ -188,7 +188,9 @@ class Envelope:
         self.people = people
 
         #### clean people before placing them!!!!
+
         for person in people:
+            person.previous_claimed_positions = person.claimed_cells
             ##### refresh person here?
             person.refresh_claimed()
             #### this refreshes person's conflicts

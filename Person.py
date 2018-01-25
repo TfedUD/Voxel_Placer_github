@@ -62,6 +62,8 @@ class Person:
         self.vectors_away_from_neighbors_DESIRE = []
         self.vectors_away_from_neighbors_BOTH = []
 
+        self.previous_claimed_positions = []
+
     def introduce_person(self):
 
         self.evaluation_num += 1
@@ -333,11 +335,15 @@ class Person:
     def gradual_pattern_heirarchy(self):
         # wehere to update this thing!!!
 
-        current_cloud = self.claimed_cells + self.need()
+        current_cloud = self.previous_claimed_positions + self.need()
         current_cloud = list(set(current_cloud))
 
         target_cloud = self.desire()
         extra_layer = self.find_immmediate_border(current_cloud,target_cloud)
+
+        self.personal_log.append("_________________________this {} is the claimed cells".format(self.previous_claimed_positions))
+        #self.personal_log.append("this {} is the current cloud, this {} is the target cloud".format(current_cloud,target_cloud))
+        #self.personal_log.append("this {} is the extra layer".format(extra_layer))
 
         all_to_claim = current_cloud + extra_layer
         # what are we going to ask the envelope for is the current cloud (claimed)

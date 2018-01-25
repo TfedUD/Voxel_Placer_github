@@ -45,7 +45,7 @@ print("points", points)
 
 #points = [(12, 6, 1), (8, 8, 15), (12, 4, 15), (11, 9, 6), (16, 2, 9), (4, 1, 8), (17, 9, 4), (9, 1, 2), (10, 7, 17), (3, 5, 13), (10, 9, 6), (17, 7, 14), (16, 4, 1), (17, 0, 2), (12, 0, 15), (10, 3, 10), (2, 3, 18), (7, 3, 4)]
 
-mytick = 10
+mytick = 105
 
 #print(points)
 #points = [ (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2) ]
@@ -180,7 +180,9 @@ for person in people:
 
 #### writing the file
 
-both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+both_names = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+
+#both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -213,8 +215,9 @@ file.write("b_logs = logs")
 ####################################################
 
 # writing files for c4d
+c4d_name = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 
-c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+#c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 
@@ -224,8 +227,8 @@ file.write(str(states_of_machine))
 ####################################################
 
 
-"""
-for i in range(5):
+
+for i in range(ticks):
     print("++++++++++++++++++++")
     print (i)
     all_list = all_personal_logs["person_15"][i]
@@ -234,7 +237,7 @@ for i in range(5):
 
 
 
-
+"""
 for person in people:
     if person.name == "person_15":
         print(person.pattern_heirarchy())
@@ -256,7 +259,7 @@ for key in need_and_desire:
     if key not in need_no_desire:
         print(key)
         print(need_and_desire[key])
-"""
+
 
 print(envelope.cells_in_conflict())
 for cell in envelope.cells_in_conflict():
@@ -266,3 +269,4 @@ print("Attr", envelope.cells_in_conflict_attr)
 for key in envelope.cells:
     cell = envelope.cells[key]
     print(key, ": ", cell.state)
+"""
