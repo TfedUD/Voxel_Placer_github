@@ -24,7 +24,7 @@ r.seed(seed)
 
 
 x_s = 34 #28
-y_s = 1 #9
+y_s = 9 #9
 z_s = 34 #28
 
 value = "desire"  # "desire"

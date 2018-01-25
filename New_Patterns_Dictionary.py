@@ -2,6 +2,7 @@
 #################################
 # 2d
 # need 2d
+"""
 with open('__Input_dictionaries/Dictionary_2d_test_01.txt','r') as inf:
     dict_from_file = eval(inf.read())
 need_dictionary = (dict_from_file)
@@ -15,18 +16,18 @@ desire_dictionary = (dict_from_file)
 """
 # 3d
 # need 3d
-with open('Dictionary_3d_test_04.txt','r') as inf:
+with open('__Input_dictionaries/Dictionary_3d_test_04.txt','r') as inf:
     dict_from_file = eval(inf.read())
 need_dictionary = (dict_from_file)
 
 # desire 3d
-with open('Dictionary_3d_test_DESIRE.txt','r') as inf:
+with open('__Input_dictionaries/Dictionary_3d_test_DESIRE.txt','r') as inf:
     dict_from_file = eval(inf.read())
 desire_dictionary = (dict_from_file)
 
 
 #################################
-"""
+
 
 
 
