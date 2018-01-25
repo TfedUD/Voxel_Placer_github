@@ -4,6 +4,12 @@ from New_Patterns_Dictionary import Activity_Pattern
 
 #update test
 
+
+need_value = 100
+desire_value = 1
+#conflict_value = 5
+
+
 ####################################################
 
 
@@ -51,7 +57,10 @@ class Person:
         self.movement_vector = None
 
         self.movement_history = []
-        self.notification = []
+        self.notification_inbox = []
+        self.vectors_away_from_neighbors_NEED = []
+        self.vectors_away_from_neighbors_DESIRE = []
+        self.vectors_away_from_neighbors_BOTH = []
 
     def introduce_person(self):
 
@@ -104,43 +113,12 @@ class Person:
 
     def need(self):
 
-        # initiating an attributes for person called need
-        # the problem with initiateing an attribute within a method and not inside __init__
-        # is the fact that you need to run this function first to create the attribute!
-        # so the attribute is useless without the function itself!
-
-        # don't you ever call a function and an attribute with the same name!!
-        # specially when you create the attribute within the function
-        # like what you're doing here!
-        # if you called to attribute before the function it will return the method name
-        # if you called the function the first time and the attribute was initiated
-        # you can't call the function again because the attribute took it's name
-        # in this case this is the Error returned:
-        # TypeError: 'list' object is not callable
-        # because the attribute was a list and I put () after it to call the function
-
-        self.need_cells = []
-        heirarchy_dictionary = self.pattern_heirarchy()
-        for position in heirarchy_dictionary:
-            if heirarchy_dictionary[position] == 3: # make it 3 later
-                self.need_cells.append(position)
-        # OUTPUT: positions (x,y) of needed voxels
-
-        return self.need_cells
+        return self.pattern.need()
 
 
     def desire(self):
-        # initiating an attributes for person called desire
 
-        #self.desire_cells = []
-        desire_cells = []
-        heirarchy_dictionary = self.pattern_heirarchy()
-        for position in heirarchy_dictionary:
-            if heirarchy_dictionary[position] == 1:
-                self.desire_cells.append(position)
-        # OUTPUT: positions (x,y) of desire voxels
-        #return self.desire_cells
-        return desire_cells
+        return self.pattern.desire()
 
 
     def need_and_desire(self):
@@ -226,6 +204,7 @@ class Person:
         self.activity = self.schedule[time]
 
         # Leaving building [step 1]: update destination
+        # leaving_building
         if self.activity == 'out':
             self.destination = 'ground_floor'
             #print("Destination set to {}".format(self.destination))
@@ -294,16 +273,100 @@ class Person:
         return pattern
 
 
+    # This function takes in the current_cloud and the desire cloud,
+    # And returns the voxels that are on the border of the current_cloud
+    # This funciton represents the gradient of desire functions
+    # To implement this correctly, for every time frame, a new layer of desire
+    # voxels needs to be added to the current_cloud if there are no conflicts
+
+    def find_immmediate_border(self, current_cloud,target_cloud):
+        # both current_cloud and target_cloud are a list of positions
+        # returns the positions of the boundary positions of self.
+        border_voxels = []
+        target_positions_without_current_positions = []
+        check_counter = 0
+
+        # 1. for every point in target cloud:
+        for position in target_cloud:
+            # find all the points that are not inside the current_cloud
+            if position not in current_cloud:
+            # Append these points to a list "target_cloud_sans_current" current cloud positions
+                target_positions_without_current_positions.append(position)
+        #print(target_positions_without_current_positions)
+
+        # 2. Here is where we need to check every point in in target_cloud_sans_current
+        for position_target in target_positions_without_current_positions:
+        # 3. we have have a condition that each point needs to satisfy
+            for position_current in current_cloud:
+                counter_x = 0
+                counter_y  = 0
+                counter_z = 0
+                # x conditions
+                if position_current[0] == position_target[0] \
+                or position_current[0] + 1 == position_target[0] \
+                or position_current[0] - 1 == position_target[0]:
+                    counter_x += 1
+
+                    #print("counter_x",counter_x)
+                # y conditions
+                if position_current[1] == position_target[1] \
+                or position_current[1] + 1 == position_target[1] \
+                or position_current[1] - 1 == position_target[1]:
+                    counter_y += 1
+                    #print("counter_y",counter_y)
+                # z conditions
+                if position_current[2] == position_target[2] \
+                or position_current[2] + 1 == position_target[2] \
+                or position_current[2] - 1 == position_target[2]:
+                    counter_z += 1
+
+                if counter_x + counter_y + counter_z == 3:
+                    border_voxels.append(position_target)
+
+
+
+        border_voxels = list(set(border_voxels))
+
+        return border_voxels
+
+
+    def gradual_pattern_heirarchy(self):
+        # wehere to update this thing!!!
+
+        current_cloud = self.claimed_cells + self.need()
+        current_cloud = list(set(current_cloud))
+
+        target_cloud = self.desire()
+        extra_layer = self.find_immmediate_border(current_cloud,target_cloud)
+
+        all_to_claim = current_cloud + extra_layer
+        # what are we going to ask the envelope for is the current cloud (claimed)
+        # and the extra layer
+        # and they should be in pattern heiracy format
+        # so the envelope know where to place 2 and 1
+
+        # we need to sort positions in all_to_claims to need and desire
+        actitivy_cell_value = {}
+
+        for position in all_to_claim:
+            if position in self.desire():
+                actitivy_cell_value[position] = desire_value
+            if position in self.need():
+                actitivy_cell_value[position] = need_value
+
+        return actitivy_cell_value
+
     def pattern_heirarchy(self):
+        # we are not using this anymore!!!!!!!
         pattern = self.activity_pattern()
         actitivy_cell_value = {}
         # I am setting the values here based on which list the position is in
         # should we do that in the function that reads the matrices?
-        for position in pattern.need():
-            actitivy_cell_value[position] = 2 # make this one 3 later
-
         for position in pattern.desire():
-            actitivy_cell_value[position] = 1
+            actitivy_cell_value[position] = desire_value
+
+        for position in pattern.need():
+            actitivy_cell_value[position] = need_value # make this one 3 later
 
         return actitivy_cell_value
 
@@ -561,9 +624,12 @@ class Person:
         return vectors
 
     # [2]
+    # leaving_building
     def vectors_for_intentional_mov(self):
 
         if self.destination:
+
+
             vectors = self.vectors_toward_a_destination(self.destination)
             self.personal_log.append("These vectors [{}] will take me to my destination [{}]".format(vectors, self.destination))
             return vectors
@@ -606,7 +672,6 @@ class Person:
             # there's not intentional movement
             return False
         """
-        pass
 
 
     # IMPORTANT
@@ -626,6 +691,11 @@ class Person:
 
 
     def evaluate_position(self, value):
+        ### ORDER
+        # inside envelope
+        # away from conflicts with neighbors
+        # move to destination (intentional movement)
+        # get away from notifications
 
         #for line in self.satisfaction():
             #self.personal_log.append(line)
@@ -634,15 +704,17 @@ class Person:
         # This function should only return the vector that
         # person should move according to in the NEXT iteration!
         # write another function for update_position based on that!
-        """
-        Later I should be able to evaluate the position according to the
-        different vectors every movement suggest
-        and choose the movement with the least effort/disturbance?
 
-        """
 
-        neighbors_vectors = self.vectors_from_neighbors()
+        # RUN FUNCTIONS
+        self.neighbors_Iam_conflicting_with()
+        self.vectors_from_neighbors() # this is both need and desire - won't use it!
 
+        need_neighbors_vectors = self.vectors_away_from_neighbors_NEED # this one comes first
+        desire_neighbors_vectors = self.vectors_away_from_neighbors_DESIRE # the last decision to make
+
+        intentional_vectors = self.vectors_for_intentional_mov()
+        #notifications_vectors = self.vectors_away_from_notifications()
 
 
         # I am not comparing the vectors to each other now
@@ -650,9 +722,9 @@ class Person:
         # look for vectors in:
 
         # [1]: stay inside envelope
-        if self.position_inside_envelope_vectors(self.position, self.activity_pattern(), value):
+        if self.position_inside_envelope_vectors(self.position, self.activity_pattern()):
             # move according to that
-            vectors = self.position_inside_envelope_vectors(self.position, self.activity_pattern(), value)
+            vectors = self.position_inside_envelope_vectors(self.position, self.activity_pattern())
             self.personal_log.append("vectors for envelope are [{}]".format(vectors))
 
             my_vector = self.dominant_vector(vectors)
@@ -661,12 +733,12 @@ class Person:
             self.movement_vector = my_vector
 
 
-        # [3]: move away from NEIGHBOR!
+        # [2]: move away from NEIGHBOR! [IN NEED]
         #neighbors_vectors = self.vectors_from_neighbors()
-        elif neighbors_vectors:
-            self.personal_log.append("neighbors_vectos input: {}".format(neighbors_vectors))
-            #self.personal_log.append(neighbors_vectors)
-            my_vector = self.best_vector(neighbors_vectors)
+        elif need_neighbors_vectors:
+            self.personal_log.append("NEED NEIGBORS vectors: {}".format(need_neighbors_vectors))
+            #self.personal_log.append(need_neighbors_vectors)
+            my_vector = self.best_vector(need_neighbors_vectors)
 
             # check if my_vector has been tried a lot before using it again!
 
@@ -690,17 +762,19 @@ class Person:
             else:
 
                 #self.personal_log.append("[{}] is the best vector I found but didn't use?!!".format(my_vector))
-                self.personal_log.append("I will move [{}] to get away from closest neighbor!".format(my_vector))
+                self.personal_log.append("I will move [{}] to get away from closest neighbor NEED!".format(my_vector))
                 #self.move_according_to(my_vector)
                 self.movement_vector = my_vector
 
 
-        # [2]: go to destination
+        # [3]: go to destination
         # you take one step every iteration so we will use elif
-        elif self.vectors_for_intentional_mov():
-            vectors = self.vectors_for_intentional_mov()
+        # leaving_building
 
-            my_vector = self.best_vector(vectors)
+
+        elif intentional_vectors:
+
+            my_vector = self.best_vector(intentional_vectors)
             if self.check_clear_path(my_vector):
                 self.personal_log.append("I will move [{}] to go to destination!".format(my_vector))
             #self.move_according_to(my_vector)
@@ -840,7 +914,8 @@ class Person:
             self.personal_log.append("The backup list is empty? I won't move?")
             #print("The backup list is empty?")
 
-    # [√]
+
+
     def position_from_a_vector(self, vector):
         current_position = self.position
         proposed_position = self.position_plus_vector(current_position, vector)
@@ -876,7 +951,7 @@ class Person:
 
         return new_position
 
-    # [√]
+
     def pattern_from_proposed_position(self, proposed_position):
         # the input of this method is a position
 
@@ -896,7 +971,8 @@ class Person:
         # p is a CLASS and not a list of positions
         return pattern
 
-    # [√]
+
+
     def is_proposed_position_inside_envelope(self, proposed_position):
         # this also needs to handle need and desire
         # the main method is still dealing with need only!
@@ -920,7 +996,7 @@ class Person:
         # when we need that
         # otherwise it should keep using self.position and self.pattern
 
-    # [√]
+
     def consuming_value_of_proposed_position(self, proposed_position, value = "need"):
 
         if value == "need":
@@ -945,11 +1021,13 @@ class Person:
         consuming_counter = 0
         for position in positions_to_consume:
             #cells is attribute of envelope which is a dict of all envelope cells
-            if position in self.envelope.cells:
+            if position in self.envelope.cells and position not in self.claimed_cells:
                 envelope_cell = self.envelope.cells[position]
+                # check_me: nothing called unknown anymore
                 if envelope_cell.state == "Unknown":
                     #self.personal_log.append("Position {} has a conflict and will cost 2".format(position))
-                    consuming_counter += 2 # not sure about that
+                    # check_me : we need to different conflict types
+                    consuming_counter += conflict_value # not sure about that
                     #self.personal_log.append("This conflict position updated the counter to {}".format(consuming_counter))
                 else:
                     consuming_counter += envelope_cell.state
@@ -962,6 +1040,7 @@ class Person:
         return consuming_counter
 
 
+    # leaving_building
     def check_clear_path(self,vector):
         proposed_position = self.position_from_a_vector(vector)
         activity_cloud = self.pattern_from_proposed_position(proposed_position)
@@ -975,6 +1054,7 @@ class Person:
             #cells is attribute of envelope which is a dict of all envelope cells
             if position in self.envelope.cells:
                 envelope_cell = self.envelope.cells[position]
+                # check_me : what is this 3 here?
                 if envelope_cell.state == "conflict_need" or envelope_cell.state == 3:
                     return False
                     # need to check conflict between other people in circulation
@@ -1134,14 +1214,18 @@ class Person:
         self.position = (self.x, self.y, self.z)
 
 
+
     def neighbors_Iam_conflicting_with(self):
         # uses conflicts to find neighbors
 
         neighbors_names = []
-        neighbors_as_objects = []
+        self.neighbors_as_objects = []
+        self.neighbors_in_need = []
+        self.neighbors_in_desire = []
 
         if self.conflicts:
 
+            # in this loop we're reading names to append them to the log
             for position in self.conflicts:
 
                 # the one using the readable version
@@ -1154,6 +1238,9 @@ class Person:
                         neighbors_names.append(name)
 
 
+            # finding out which conflicts are need and which are desire
+
+            #for position in self.conflicts:
                 # THIS IS THE PART I AM returning NOW!
                 # the one using classes version
                 cell_object = self.envelope.cells[position]
@@ -1161,19 +1248,32 @@ class Person:
                 conflict_value = self.envelope.cells_in_conflict()[cell_object][0]
                 conflicting_people = self.envelope.cells_in_conflict()[cell_object][1]
 
+                # all conflicts no matter need or desire
                 for person in conflicting_people:
                     if person.name != self.name:
-                        neighbors_as_objects.append(person)
+                        self.neighbors_as_objects.append(person)
 
-            tag = " I am having a conflict with: {} ".format(neighbors_names)
-            #if tag not in self.personal_log:
-            self.personal_log.append(tag)
 
-            #return [neighbors_names, neighbors_as_objects]
-            #self.neighbors_as_objects = neighbors_as_objects
-            return neighbors_as_objects
+                # need conflicts
+                if conflict_value == 100:
+                    for person in conflicting_people:
+                        if person.name != self.name:
+                            self.neighbors_in_need.append(person)
 
-            #return neighbors
+                # desire conflicts
+                if conflict_value == 1:
+                    for person in conflicting_people:
+                        if person.name != self.name:
+                            self.neighbors_in_desire.append(person)
+
+
+
+            self.personal_log.append("all conflicts with [{}]".format([p.name for p in self.neighbors_as_objects ]))
+            self.personal_log.append("NEED conflict with [{}]".format([p.name for p in self.neighbors_in_need ]))
+            self.personal_log.append("DESIRE conflict with [{}]".format([p.name for p in self.neighbors_in_desire]))
+
+
+
         else:
             self.personal_log.append("I don't have any conflicts with my neighbors!")
             return False
@@ -1376,48 +1476,63 @@ class Person:
 
 
     def vectors_from_neighbors(self):
-        # in order not to run these functions more than one time!!
-        #self.backup_vectors = []
-        all_neighbors = self.neighbors_Iam_conflicting_with()
 
-        # this part needs more evaluation!
-        all_vectors = []
+        self.backup_vectors = []
 
-        if all_neighbors:
-            closest_neighbors = self.closest_neighbors(all_neighbors)
+        self.vectors_away_from_neighbors_NEED = []
+        self.vectors_away_from_neighbors_DESIRE = []
 
+        all_need_vectors = []
+        all_desire_vectors = []
+
+        # need
+        if self.neighbors_in_need:
+            self.personal_log.append("I recieved these neighbors in need {}".format(self.neighbors_in_need))
+            closest_neighbors = self.closest_neighbors(self.neighbors_in_need)
+            self.personal_log.append("this is the closest n in need {}".format(closest_neighbors))
+            for neighbor in closest_neighbors:
+                vectors = self.vectors_away_from_a_position(neighbor.position)
+                self.personal_log.append("These are vectors {} away from {}".format(vectors, neighbor.name))
+                #print("vectors away", vectors)
+                if vectors:
+                    self.personal_log.append(" I added these vectors to need vectors".format(vectors))
+                    all_need_vectors += vectors
+
+            self.personal_log.append("These are all_need_vectors now {} ".format(all_need_vectors))
+            if all_need_vectors:
+                self.personal_log.append("I should be having vectors in need".format(all_need_vectors))
+                self.vectors_away_from_neighbors_NEED = self.dominant_items_in_list(all_need_vectors)
+                self.personal_log.append("These are dominant vectors away from neighbors NEED {}".format(self.vectors_away_from_neighbors_NEED))
+
+        # desire
+        elif self.neighbors_in_desire:
+            closest_neighbors = self.closest_neighbors(self.neighbors_in_desire)
             for neighbor in closest_neighbors:
                 vectors = self.vectors_away_from_a_position(neighbor.position)
                 #print("vectors away", vectors)
                 if vectors:
-                    all_vectors += vectors
+                    all_desire_vectors += vectors
 
-            if all_vectors:
-                dominant_vectors = self.dominant_items_in_list(all_vectors)
+            if all_desire_vectors:
+                self.vectors_away_from_neighbors_DESIRE = self.dominant_items_in_list(all_desire_vectors)
+                self.personal_log.append("These are dominant vectors away from neighbors DESIRE {}".format(self.vectors_away_from_neighbors_DESIRE))
 
 
+                """
                 self.backup_vectors = []
                 for vector in all_vectors:
                     if vector not in dominant_vectors:
                         self.backup_vectors.append(vector)
+                """
 
-
-                self.personal_log.append("These are dominant vectors away from neighbors {}".format(dominant_vectors))
-                self.vectors_away_from_neighbors = dominant_vectors
-                #print("These are dominant vectors away from neighbors {}".format(dominant_vectors))
-                return dominant_vectors
-
-            else:
-                #print("I have neighbors but couldn't return vectors! why?!")
-                return False
-                #print("all_neighbors", all_neighbors)
-                #print("all_vectors", all_vectors)
 
         else:
             self.personal_log.append("I don't have a close neighbor at the moment!")
+            #print("I don't have a close neighbor at the moment!")
             return False
 
 
+    # leaving_building
     def notify_neighbor(self):
         # this function should send a notification for the neighbor we're trying to pass through
         # this means every person should have a personal attribute called self.notification

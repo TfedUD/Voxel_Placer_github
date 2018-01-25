@@ -89,7 +89,7 @@ class Envelope:
             person_need = person.need()
             self.num_of_needed_cells += len(person_need)
 
-            pattern_heirarchy = person.pattern_heirarchy()
+            pattern_heirarchy = person.gradual_pattern_heirarchy()
 
             for key in pattern_heirarchy:
                 ###### I overlooked ==
@@ -292,8 +292,10 @@ class Envelope:
                     for person in conflicting_people:
                         names.append(person.name)
                     """
+                    # check_me: is this correct?
                     cells_in_conflict[cell_key] = [max_priority, conflicting_people]
-                    cell_key.state = "Unknown"
+                    #cell_key.state = "Unknown"
+                    cell_key.state = max_priority * len(conflicting_people)
 
                     ###
                     ### what does this part do?
@@ -303,8 +305,9 @@ class Envelope:
                     # the cell goes to the cells_in_conflict dictionary
                     # this is a temporary dictionary till we figure out what to do with the conflict
 
+
         #return [allocated_cells, cells_in_conflict]
-        #### is this here a good idea or not!!!
+        #### is this here a good idea or not!!!\
         self.allocated_cells_attr = allocated_cells
         self.cells_in_conflict_attr = cells_in_conflict
 
