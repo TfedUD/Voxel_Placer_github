@@ -685,6 +685,11 @@ class Person:
 
 
     def evaluate_position(self, value):
+        ### ORDER
+        # inside envelope
+        # away from conflicts with neighbors
+        # move to destination (intentional movement)
+        # get away from notifications
 
         #for line in self.satisfaction():
             #self.personal_log.append(line)
@@ -693,15 +698,17 @@ class Person:
         # This function should only return the vector that
         # person should move according to in the NEXT iteration!
         # write another function for update_position based on that!
-        """
-        Later I should be able to evaluate the position according to the
-        different vectors every movement suggest
-        and choose the movement with the least effort/disturbance?
 
-        """
 
-        neighbors_vectors = self.vectors_from_neighbors()
+        # RUN FUNCTIONS
+        self.neighbors_Iam_conflicting_with()
+        self.vectors_from_neighbors() # this is both need and desire - won't use it!
 
+        need_neighbors_vectors = self.vectors_away_from_neighbors_NEED # this one comes first
+        desire_neighbors_vectors = self.vectors_away_from_neighbors_DESIRE # the last decision to make
+
+        intentional_vectors = self.vectors_for_intentional_mov()
+        notifications_vectors = self.vectors_away_from_notifications()
 
 
         # I am not comparing the vectors to each other now
@@ -720,12 +727,12 @@ class Person:
             self.movement_vector = my_vector
 
 
-        # [3]: move away from NEIGHBOR!
+        # [2]: move away from NEIGHBOR! [IN NEED]
         #neighbors_vectors = self.vectors_from_neighbors()
-        elif neighbors_vectors:
-            self.personal_log.append("neighbors_vectos input: {}".format(neighbors_vectors))
-            #self.personal_log.append(neighbors_vectors)
-            my_vector = self.best_vector(neighbors_vectors)
+        elif need_neighbors_vectors:
+            self.personal_log.append("NEED NEIGBORS vectors: {}".format(need_neighbors_vectors))
+            #self.personal_log.append(need_neighbors_vectors)
+            my_vector = self.best_vector(need_neighbors_vectors)
 
             # check if my_vector has been tried a lot before using it again!
 
@@ -749,17 +756,18 @@ class Person:
             else:
 
                 #self.personal_log.append("[{}] is the best vector I found but didn't use?!!".format(my_vector))
-                self.personal_log.append("I will move [{}] to get away from closest neighbor!".format(my_vector))
+                self.personal_log.append("I will move [{}] to get away from closest neighbor NEED!".format(my_vector))
                 #self.move_according_to(my_vector)
                 self.movement_vector = my_vector
 
 
-        # [2]: go to destination
+        # [3]: go to destination
         # you take one step every iteration so we will use elif
-        elif self.vectors_for_intentional_mov():
-            vectors = self.vectors_for_intentional_mov()
+        # leaving_building
 
-            my_vector = self.best_vector(vectors)
+        elif intentional_vectors:
+
+            my_vector = self.best_vector(intentional_vectors)
             if self.check_clear_path(my_vector):
                 self.personal_log.append("I will move [{}] to go to destination!".format(my_vector))
             #self.move_according_to(my_vector)
@@ -899,7 +907,8 @@ class Person:
             self.personal_log.append("The backup list is empty? I won't move?")
             #print("The backup list is empty?")
 
-    # [√]
+
+
     def position_from_a_vector(self, vector):
         current_position = self.position
         proposed_position = self.position_plus_vector(current_position, vector)
@@ -935,7 +944,7 @@ class Person:
 
         return new_position
 
-    # [√]
+
     def pattern_from_proposed_position(self, proposed_position):
         # the input of this method is a position
 
@@ -955,7 +964,8 @@ class Person:
         # p is a CLASS and not a list of positions
         return pattern
 
-    # [√]
+
+
     def is_proposed_position_inside_envelope(self, proposed_position):
         # this also needs to handle need and desire
         # the main method is still dealing with need only!
@@ -979,7 +989,7 @@ class Person:
         # when we need that
         # otherwise it should keep using self.position and self.pattern
 
-    # [√]
+
     def consuming_value_of_proposed_position(self, proposed_position, value = "need"):
 
         if value == "need":
@@ -1004,7 +1014,7 @@ class Person:
         consuming_counter = 0
         for position in positions_to_consume:
             #cells is attribute of envelope which is a dict of all envelope cells
-            if position in self.envelope.cells:
+            if position in self.envelope.cells and position not in self.claimed:
                 envelope_cell = self.envelope.cells[position]
                 if envelope_cell.state == "Unknown":
                     #self.personal_log.append("Position {} has a conflict and will cost 2".format(position))
@@ -1021,6 +1031,7 @@ class Person:
         return consuming_counter
 
 
+    # leaving_building
     def check_clear_path(self,vector):
         proposed_position = self.position_from_a_vector(vector)
         activity_cloud = self.pattern_from_proposed_position(proposed_position)
@@ -1193,14 +1204,18 @@ class Person:
         self.position = (self.x, self.y, self.z)
 
 
+
     def neighbors_Iam_conflicting_with(self):
         # uses conflicts to find neighbors
 
         neighbors_names = []
-        neighbors_as_objects = []
+        self.neighbors_as_objects = []
+        self.neighbors_in_need = []
+        self.neighbors_in_desire = []
 
         if self.conflicts:
 
+            # in this loop we're reading names to append them to the log
             for position in self.conflicts:
 
                 # the one using the readable version
@@ -1213,6 +1228,9 @@ class Person:
                         neighbors_names.append(name)
 
 
+            # finding out which conflicts are need and which are desire
+
+            #for position in self.conflicts:
                 # THIS IS THE PART I AM returning NOW!
                 # the one using classes version
                 cell_object = self.envelope.cells[position]
@@ -1220,19 +1238,29 @@ class Person:
                 conflict_value = self.envelope.cells_in_conflict()[cell_object][0]
                 conflicting_people = self.envelope.cells_in_conflict()[cell_object][1]
 
+                # all conflicts no matter need or desire
                 for person in conflicting_people:
                     if person.name != self.name:
-                        neighbors_as_objects.append(person)
+                        self.neighbors_as_objects.append(person)
+                    self.personal_log.append("all conflicts with [{}]".format([p.name for p in self.neighbors_as_objects ]))
 
-            tag = " I am having a conflict with: {} ".format(neighbors_names)
-            #if tag not in self.personal_log:
-            self.personal_log.append(tag)
+                # need conflicts
+                if conflict_value == 2:
+                    for person in conflicting_people:
+                        if person.name != self.name:
+                            self.neighbors_in_need.append(person)
+                    self.personal_log.append("NEED conflict with [{}]".format([p.name for p in self.neighbors_in_need ]))
 
-            #return [neighbors_names, neighbors_as_objects]
-            #self.neighbors_as_objects = neighbors_as_objects
-            return neighbors_as_objects
 
-            #return neighbors
+                # desire conflicts
+                if conflict_value == 1:
+                    for person in conflicting_people:
+                        if person.name != self.name:
+                            self.neighbors_in_desire.append(person)
+                    self.personal_log.append("DESIRE conflict with [{}]".format([p.name for p in self.neighbors_in_desire]))
+
+
+
         else:
             self.personal_log.append("I don't have any conflicts with my neighbors!")
             return False
