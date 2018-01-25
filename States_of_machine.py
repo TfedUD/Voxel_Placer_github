@@ -4,6 +4,7 @@ from Schedule import people_dictionary
 import random as r
 import time
 
+
 timestr = time.strftime("%Y%m%d-%H%M")
 #print(timestr)
 
@@ -24,7 +25,7 @@ r.seed(seed)
 
 
 x_s = 34 #28
-y_s = 9 #9
+y_s = 1 #9
 z_s = 34 #28
 
 value = "desire"  # "desire"
@@ -45,12 +46,12 @@ print("points", points)
 
 #points = [(12, 6, 1), (8, 8, 15), (12, 4, 15), (11, 9, 6), (16, 2, 9), (4, 1, 8), (17, 9, 4), (9, 1, 2), (10, 7, 17), (3, 5, 13), (10, 9, 6), (17, 7, 14), (16, 4, 1), (17, 0, 2), (12, 0, 15), (10, 3, 10), (2, 3, 18), (7, 3, 4)]
 
-mytick = 105
+mytick = 10
 
 #print(points)
 #points = [ (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2) ]
 factor = 1
-ticks = 100 * factor
+ticks = 300 * factor
 
 ####################################################
 
@@ -87,7 +88,8 @@ for tick in range(ticks):
 
     states_of_machine[tick] = {}
     #tick +=1
-    #print(tick)
+    timestr_2 = time.strftime("%Y%m%d-%H%M")
+    print(timestr_2," : " ,tick)
 
     # [STEP 1]: Updating people
 
@@ -180,9 +182,8 @@ for person in people:
 
 #### writing the file
 
-both_names = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
-
-#both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+#both_names = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -215,9 +216,8 @@ file.write("b_logs = logs")
 ####################################################
 
 # writing files for c4d
-c4d_name = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
-
-#c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+#c4d_name = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 

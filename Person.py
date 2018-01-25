@@ -789,6 +789,42 @@ class Person:
             else:
                 self.personal_log.append("I want to go {} but I can't!".format(my_vector))
 
+
+
+
+
+        # [5]: move away from NEIGHBOR! [IN DESIRE]
+        #neighbors_vectors = self.vectors_from_neighbors()
+        elif desire_neighbors_vectors:
+            if value == "desire":
+                self.personal_log.append("desire neighbors vectors input: {}".format(desire_neighbors_vectors))
+                #self.personal_log.append(desire_neighbors_vectors)
+                my_vector = self.best_vector(desire_neighbors_vectors)
+
+                # check if my_vector has been tried a lot before using it again!
+
+                if len(self.movement_history) > 30 \
+                and my_vector == self.movement_history[-2] \
+                and my_vector == self.movement_history[-4] \
+                and my_vector == self.movement_history[-6] \
+                and my_vector == self.movement_history[-8] \
+                and my_vector == self.movement_history[-10] \
+                and my_vector == self.movement_history[-12] \
+                and my_vector == self.movement_history[-14] \
+                and my_vector == self.movement_history[-16] \
+                and my_vector == self.movement_history[-18] \
+                and my_vector == self.movement_history[-20] :
+
+                    self.personal_log.append("Vector {} seems to be the best but I tried it before and didn't work! I will try the backup list!".format(my_vector))
+                    my_backup_vector = self.best_vector(self.backup_vectors)
+                    self.movement_vector = my_backup_vector
+
+                else:
+                    #self.personal_log.append("[{}] is the best vector I found but didn't use?!!".format(my_vector))
+                    self.personal_log.append("I will move [{}] to get away from closest neighbor DESIRE!".format(my_vector))
+                    #self.move_according_to(my_vector)
+                    self.movement_vector = my_vector
+
         else:
             self.personal_log.append("No need to update position! Staying where I am!")
             self.movement_vector = None
