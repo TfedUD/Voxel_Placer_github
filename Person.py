@@ -1027,7 +1027,7 @@ class Person:
                 if envelope_cell.state == "Unknown":
                     #self.personal_log.append("Position {} has a conflict and will cost 2".format(position))
                     # check_me : we need to different conflict types
-                    consuming_counter += 5 # not sure about that
+                    consuming_counter += conflict_value # not sure about that
                     #self.personal_log.append("This conflict position updated the counter to {}".format(consuming_counter))
                 else:
                     consuming_counter += envelope_cell.state
