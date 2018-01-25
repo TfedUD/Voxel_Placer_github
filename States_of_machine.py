@@ -171,7 +171,7 @@ for person in people:
 
 #### writing the file
 
-both_names = "__Final_txt_output/rhino_tick_{}*{}_e_{}*{}*{}_seed={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed)
+both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/rhino_tick_{}*{}_e_{}*{}*{}_seed={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -205,7 +205,7 @@ file.write("b_logs = logs")
 
 # writing files for c4d
 
-c4d_name = "__Final_txt_output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed)
+c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 
