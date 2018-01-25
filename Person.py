@@ -1242,22 +1242,25 @@ class Person:
                 for person in conflicting_people:
                     if person.name != self.name:
                         self.neighbors_as_objects.append(person)
-                    self.personal_log.append("all conflicts with [{}]".format([p.name for p in self.neighbors_as_objects ]))
+
 
                 # need conflicts
                 if conflict_value == 2:
                     for person in conflicting_people:
                         if person.name != self.name:
                             self.neighbors_in_need.append(person)
-                    self.personal_log.append("NEED conflict with [{}]".format([p.name for p in self.neighbors_in_need ]))
-
 
                 # desire conflicts
                 if conflict_value == 1:
                     for person in conflicting_people:
                         if person.name != self.name:
                             self.neighbors_in_desire.append(person)
-                    self.personal_log.append("DESIRE conflict with [{}]".format([p.name for p in self.neighbors_in_desire]))
+
+
+
+            self.personal_log.append("all conflicts with [{}]".format([p.name for p in self.neighbors_as_objects ]))
+            self.personal_log.append("NEED conflict with [{}]".format([p.name for p in self.neighbors_in_need ]))
+            self.personal_log.append("DESIRE conflict with [{}]".format([p.name for p in self.neighbors_in_desire]))
 
 
 
@@ -1461,8 +1464,7 @@ class Person:
 
             #pass
 
-
-    def vectors_from_neighbors(self):
+    def vectors_from_neighbors_OLD(self):
         # in order not to run these functions more than one time!!
         #self.backup_vectors = []
         all_neighbors = self.neighbors_Iam_conflicting_with()
@@ -1502,9 +1504,61 @@ class Person:
 
         else:
             self.personal_log.append("I don't have a close neighbor at the moment!")
+            #print("I don't have a close neighbor at the moment!")
             return False
 
 
+    def vectors_from_neighbors(self):
+
+        self.backup_vectors = []
+
+        self.vectors_away_from_neighbors_NEED = []
+        self.vectors_away_from_neighbors_DESIRE = []
+
+        all_need_vectors = []
+        all_desire_vectors = []
+
+        # need
+        if self.neighbors_in_need:
+            closest_neighbors = self.closest_neighbors(self.neighbors_in_need)
+            for neighbor in closest_neighbors:
+                vectors = self.vectors_away_from_a_position(neighbor.position)
+                #print("vectors away", vectors)
+                if vectors:
+                    all_need_vectors += vectors
+            if all_need_vectors:
+                self.vectors_away_from_neighbors_NEED = self.dominant_items_in_list(all_need_vectors)
+                self.personal_log.append("These are dominant vectors away from neighbors NEED {}".format(self.vectors_away_from_neighbors_NEED))
+
+        # desire
+        elif self.neighbors_in_desire:
+            closest_neighbors = self.closest_neighbors(self.neighbors_in_desire)
+            for neighbor in closest_neighbors:
+                vectors = self.vectors_away_from_a_position(neighbor.position)
+                #print("vectors away", vectors)
+                if vectors:
+                    all_desire_vectors += vectors
+
+            if all_desire_vectors:
+                self.vectors_away_from_neighbors_DESIRE = self.dominant_items_in_list(all_desire_vectors)
+                self.personal_log.append("These are dominant vectors away from neighbors DESIRE {}".format(self.vectors_away_from_neighbors_DESIRE))
+
+
+                """
+                self.backup_vectors = []
+                for vector in all_vectors:
+                    if vector not in dominant_vectors:
+                        self.backup_vectors.append(vector)
+                """
+
+
+        else:
+            self.personal_log.append("I don't have a close neighbor at the moment!")
+            #print("I don't have a close neighbor at the moment!")
+            return False
+
+
+    # leaving_building
     def notify_neighbor(self):
         # this function should send a notification for the neighbor we're trying to pass through
         # this means every person should have a personal attribute called self.notification
