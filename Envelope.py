@@ -89,7 +89,7 @@ class Envelope:
             person_need = person.need()
             self.num_of_needed_cells += len(person_need)
 
-            pattern_heirarchy = person.pattern_heirarchy()
+            pattern_heirarchy = person.gradual_pattern_heirarchy()
 
             for key in pattern_heirarchy:
                 ###### I overlooked ==

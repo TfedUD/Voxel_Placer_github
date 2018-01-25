@@ -44,7 +44,7 @@ mytick = 105
 #print(points)
 #points = [ (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2), (4,6,5), (5,9,8), (2,3,3), (3,5,2) ]
 factor = 1
-ticks = 2 * factor
+ticks = 50 * factor
 
 ####################################################
 
@@ -130,7 +130,7 @@ for tick in range(ticks):
     # every person will evaluate its current position
     # if it needs to move it will return a movement vector
     for person in people_classes:
-        person.evaluate_position("need")
+        person.evaluate_position("desire")
 
 
     # [STEP 4]: outputting
@@ -143,10 +143,18 @@ for tick in range(ticks):
     #inside_log_dictionary = all_personal_logs[tick]
 
     conflict_dict = e.cells_in_conflict()
-    conflict_list = []
+    #conflict_list = []
+    conflict_list_need = []
+    conflict_list_desire = []
     for key in conflict_dict:
-        conflict_list.append(key.position)
-    inside_dictionary["conflicts"] = conflict_list
+        if conflict_dict[key][0] == 2:
+            conflict_list_need.append(key.position)
+        elif conflict_dict[key][0] == 1:
+            conflict_list_desire.append(key.position)
+            
+        #conflict_list.append(key.position)
+    inside_dictionary["conflict_need"] = conflict_list_need
+    inside_dictionary["conflict_desire"] = conflict_list_desire
 
     for person in people:
         # the first
