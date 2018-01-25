@@ -143,10 +143,17 @@ for tick in range(ticks):
     #inside_log_dictionary = all_personal_logs[tick]
 
     conflict_dict = e.cells_in_conflict()
-    conflict_list = []
+    #conflict_list = []
+    conflict_list_need = []
+    conflict_list_desire = []
+
     for key in conflict_dict:
-        conflict_list.append(key.position)
-    inside_dictionary["conflicts"] = conflict_list
+        if conflict_dict[key][0] == 2:
+            conflict_list_need.append(key.position)
+        if conflict_dict[key][0] == 1:
+            conflict_list_desire.append(key.position)
+    inside_dictionary["conflict_need"] = conflict_list_need
+    inside_dictionary["conflict_desire"] = conflict_list_desire
 
     for person in people:
         # the first
