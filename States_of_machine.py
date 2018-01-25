@@ -22,6 +22,7 @@ x_s = 32 #28
 y_s = 1 #9
 z_s = 32 #28
 
+value = "need"  # "desire"
 
 # random points generator
 points = []
@@ -130,7 +131,7 @@ for tick in range(ticks):
     # every person will evaluate its current position
     # if it needs to move it will return a movement vector
     for person in people_classes:
-        person.evaluate_position("need")
+        person.evaluate_position(value)
 
 
     # [STEP 4]: outputting
@@ -171,7 +172,7 @@ for person in people:
 
 #### writing the file
 
-both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/rhino_tick_{}*{}_e_{}*{}*{}_seed={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed)
+both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -205,7 +206,7 @@ file.write("b_logs = logs")
 
 # writing files for c4d
 
-c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed)
+c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 
