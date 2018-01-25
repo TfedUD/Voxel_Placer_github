@@ -708,7 +708,7 @@ class Person:
         desire_neighbors_vectors = self.vectors_away_from_neighbors_DESIRE # the last decision to make
 
         intentional_vectors = self.vectors_for_intentional_mov()
-        notifications_vectors = self.vectors_away_from_notifications()
+        #notifications_vectors = self.vectors_away_from_notifications()
 
 
         # I am not comparing the vectors to each other now
@@ -1014,7 +1014,7 @@ class Person:
         consuming_counter = 0
         for position in positions_to_consume:
             #cells is attribute of envelope which is a dict of all envelope cells
-            if position in self.envelope.cells and position not in self.claimed:
+            if position in self.envelope.cells and position not in self.claimed_cells:
                 envelope_cell = self.envelope.cells[position]
                 if envelope_cell.state == "Unknown":
                     #self.personal_log.append("Position {} has a conflict and will cost 2".format(position))
