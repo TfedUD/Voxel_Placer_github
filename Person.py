@@ -113,6 +113,10 @@ class Person:
         self.conflicts = {}
 
 
+    def refresh_notifications_inbox(self):
+        self.notification_inbox = []
+
+
     def need(self):
 
         return self.pattern.need()
@@ -211,6 +215,10 @@ class Person:
             self.destination = 'ground_floor'
             #print("Destination set to {}".format(self.destination))
             self.personal_log.append("Destination set to {}".format(self.destination))
+
+            self.personal_log.append("I sent a notification to envelope!")
+
+
         # if the activity is something other than out:
         # we make it None? to override out one
         # make sure this doesn't create problems later
@@ -340,10 +348,6 @@ class Person:
 
         target_cloud = self.desire()
         extra_layer = self.find_immmediate_border(current_cloud,target_cloud)
-
-        self.personal_log.append("_________________________this {} is the claimed cells".format(self.previous_claimed_positions))
-        #self.personal_log.append("this {} is the current cloud, this {} is the target cloud".format(current_cloud,target_cloud))
-        #self.personal_log.append("this {} is the extra layer".format(extra_layer))
 
         all_to_claim = current_cloud + extra_layer
         # what are we going to ask the envelope for is the current cloud (claimed)
@@ -635,10 +639,14 @@ class Person:
 
         if self.destination:
 
-
-            vectors = self.vectors_toward_a_destination(self.destination)
-            self.personal_log.append("These vectors [{}] will take me to my destination [{}]".format(vectors, self.destination))
-            return vectors
+            if self.destination == 'ground_floor':
+                # returns a sequence of vectors
+                # returns all the steps not one only
+                vectors = self.vectors_toward_the_ground()
+                if vectors:
+                    self.notify_envelope()
+                    self.personal_log.append("These vectors [{}] will take me to the ground".format(vectors))
+                    return vectors
 
         else:
             return None
@@ -678,6 +686,21 @@ class Person:
             # there's not intentional movement
             return False
         """
+
+
+    def vectors_away_from_notifications(self):
+        notifications =  self.notification_inbox
+        # print("personal notificaitons", notifications)
+        if notifications:
+            all_vectors = []
+            for position in notifications:
+                vectors = self.vectors_away_from_a_position(position)
+                if vectors:
+                    all_vectors += vectors
+            return all_vectors
+        else:
+            return False
+
 
 
     # IMPORTANT
@@ -720,7 +743,7 @@ class Person:
         desire_neighbors_vectors = self.vectors_away_from_neighbors_DESIRE # the last decision to make
 
         intentional_vectors = self.vectors_for_intentional_mov()
-        #notifications_vectors = self.vectors_away_from_notifications()
+        notifications_vectors = self.vectors_away_from_notifications()
 
 
         # I am not comparing the vectors to each other now
@@ -777,7 +800,6 @@ class Person:
         # you take one step every iteration so we will use elif
         # leaving_building
 
-
         elif intentional_vectors:
 
             my_vector = self.best_vector(intentional_vectors)
@@ -789,8 +811,13 @@ class Person:
             else:
                 self.personal_log.append("I want to go {} but I can't!".format(my_vector))
 
-
-
+        ##########################
+        # [4]: move away from NOTIFICATIONS
+        elif notifications_vectors:
+            # we can try mymy_vector = self.dominant_vector(notifications_vectors)
+            my_vector = self.best_vector(notifications_vectors)
+            self.movement_vector = my_vector
+            self.personal_log.append("I want to go {} to get away from notifications!".format(my_vector))
 
 
         # [5]: move away from NEIGHBOR! [IN DESIRE]
@@ -965,7 +992,14 @@ class Person:
         # returns proposed position as (x, y, z)
         return proposed_position
 
-    # [√]
+
+    def add_vector_to_current_position(self,current_position, vector):
+        proposed_position = self.position_plus_vector(current_position, vector)
+
+        # returns proposed position as (x, y, z)
+        return proposed_position
+
+
     def position_plus_vector(self, position, vector):
         x = position[0]
         y = position[1]
@@ -1066,14 +1100,8 @@ class Person:
             if position in self.envelope.cells and position not in self.claimed_cells:
                 envelope_cell = self.envelope.cells[position]
                 # check_me: nothing called unknown anymore
-                if envelope_cell.state == "Unknown":
-                    #self.personal_log.append("Position {} has a conflict and will cost 2".format(position))
-                    # check_me : we need to different conflict types
-                    consuming_counter += conflict_value # not sure about that
-                    #self.personal_log.append("This conflict position updated the counter to {}".format(consuming_counter))
-                else:
-                    consuming_counter += envelope_cell.state
-                    #self.personal_log.append("This position {} updated the counter to {}".format(position, consuming_counter))
+                consuming_counter += envelope_cell.state
+                #self.personal_log.append("This position {} updated the counter to {}".format(position, consuming_counter))
                 #self.personal_log.append("this position {} has a state of {}".format(position, envelope_cell.state))
             else:
                 self.personal_log.append("this position {} is outside the envelope!".format(position))
@@ -1089,6 +1117,7 @@ class Person:
         old_cells = self.pattern.need()
         new_cells = self.pattern_from_proposed_position(proposed_position).need()
 
+        self.positions_from_neighbour_i_need = []
         # these are the new positions to consume (important input for check path clear function!!!!)
         positions_to_consume = [cell for cell in new_cells if cell not in old_cells]
 
@@ -1096,14 +1125,61 @@ class Person:
             #cells is attribute of envelope which is a dict of all envelope cells
             if position in self.envelope.cells:
                 envelope_cell = self.envelope.cells[position]
-                # check_me : what is this 3 here?
-                if envelope_cell.state == "conflict_need" or envelope_cell.state == 3:
+                if envelope_cell.state >= 100:
+                    self.positions_from_neighbour_i_need.append(position)
                     return False
                     # need to check conflict between other people in circulation
                 else:
                     return True
             else:
                 self.personal_log.append("this position {} is outside the envelope!".format(position))
+
+
+    def pattern_positions_difference(self, previous_position,proposed_position):
+        #this function returns the proposed position from a previously proposed_position
+        #it does not use the actual position as its input, rather the orgininal positions
+        #proposed next step
+        old_cells = self.pattern_from_proposed_position(previous_position).need()
+        new_cells = self.pattern_from_proposed_position(proposed_position).need()
+
+        self.positions_from_neighbour_i_need = []
+        # these are the new positions to consume (important input for check path clear function!!!!)
+        positions_to_consume = [cell for cell in new_cells if cell not in old_cells]
+        return positions_to_consume
+
+
+    def elevator_path_finder(self):
+
+        # this function should return the POSITIONS that I need to empty in the envelope
+        # it will append these positions to the envelope (in notify envelope function )
+        # the neigbors will get the notification from the envelope and move according to that
+        # it means we need to add something in evalute_position for Person to move away from notification
+        # reading notification will come later
+        # now we are trying to write them
+        # from fist position use the second vector to return the second position
+        # etc
+        # we use self.vectors_toward_a_position(previous_position) as single position
+        # around every position we will draw the pattern
+        # from the pattern we find the extra needed positions
+        # self.pattern_from_proposed_position(self, proposed_position)
+        # we append all to one list
+
+        all_positions_to_clear = []
+        # start from vectors : self.vectors_toward_the_ground() # a list of vector
+        vectors_to_ground = self.vectors_toward_the_ground() # a list
+        #print("vectors_to_ground", vectors_to_ground)
+
+        start_position = self.position
+        for vector in vectors_to_ground:
+
+            end_position = self.add_vector_to_current_position(start_position,vector)
+            trace = self.pattern_positions_difference(start_position,end_position)
+            #this is the first trace which is just positions
+            all_positions_to_clear += trace
+            start_position = end_position
+
+        #print("all_positions_to_clear", all_positions_to_clear)
+        return all_positions_to_clear
 
 
     def vector_choice(self, possible_vectors):
@@ -1140,9 +1216,6 @@ class Person:
 
         if self.evaluation_num % 9 == 8:
             vectors_hierarchy = ["right", "left", "front", "back", "down", "up"]
-
-
-
 
         for vector in vectors_hierarchy:
             if vector in possible_vectors:
@@ -1446,9 +1519,6 @@ class Person:
             return False
 
 
-        #pass
-
-
     def vectors_toward_a_destination(self, des_key):
         # so the input is one position only not a list
         # should be the neighbor.position
@@ -1514,7 +1584,24 @@ class Person:
             print("You did not enter a valid destination?!")
             return False
 
-            #pass
+    # leaving_building
+    def vectors_toward_the_ground(self):
+        #returns list of vectors
+        my_z = self.position[2]
+        possible_vectors = []
+        if my_z > 0:
+            for i in range(my_z):
+                #print("no")
+                possible_vectors.append("down")
+
+            #print("I have found the {} vectors that will lead me out".format(possible_vectors))
+            self.personal_log.append("I have found the {} vectors that will lead me out".format(possible_vectors))
+            #print(possible_vectors)
+            return possible_vectors
+        # the z
+        else:
+            return False
+
 
 
     def vectors_from_neighbors(self):
@@ -1529,20 +1616,19 @@ class Person:
 
         # need
         if self.neighbors_in_need:
-            self.personal_log.append("I recieved these neighbors in need {}".format(self.neighbors_in_need))
+            #self.personal_log.append("I recieved these neighbors in need {}".format(self.neighbors_in_need))
             closest_neighbors = self.closest_neighbors(self.neighbors_in_need)
-            self.personal_log.append("this is the closest n in need {}".format(closest_neighbors))
+            #self.personal_log.append("this is the closest n in need {}".format(closest_neighbors))
             for neighbor in closest_neighbors:
                 vectors = self.vectors_away_from_a_position(neighbor.position)
-                self.personal_log.append("These are vectors {} away from {}".format(vectors, neighbor.name))
+                #self.personal_log.append("These are vectors {} away from {}".format(vectors, neighbor.name))
                 #print("vectors away", vectors)
                 if vectors:
-                    self.personal_log.append(" I added these vectors to need vectors".format(vectors))
+                    #self.personal_log.append(" I added these vectors to need vectors".format(vectors))
                     all_need_vectors += vectors
-
-            self.personal_log.append("These are all_need_vectors now {} ".format(all_need_vectors))
+            #self.personal_log.append("These are all_need_vectors now {} ".format(all_need_vectors))
             if all_need_vectors:
-                self.personal_log.append("I should be having vectors in need".format(all_need_vectors))
+                #self.personal_log.append("I should be having vectors in need".format(all_need_vectors))
                 self.vectors_away_from_neighbors_NEED = self.dominant_items_in_list(all_need_vectors)
                 self.personal_log.append("These are dominant vectors away from neighbors NEED {}".format(self.vectors_away_from_neighbors_NEED))
 
@@ -1575,7 +1661,39 @@ class Person:
 
 
     # leaving_building
+    # check_me : we don't need notify_neighbor and notify_to_vector??
     def notify_neighbor(self):
+        vector_to_destination = vectors_toward_a_destination(self.destination)
+        if self.positions_from_neighbour_i_need:
+            #if this is true - that means i need to notify_someone
+            #who?
+            for position in self.positions_from_neighbour_i_need:
+                neighbour_to_notify = self.envelope.allocated_cells()[position][1]
+                #this gives us who is occupiying these cells
+                neighbour_to_notify.self.notification_inbox.append(position)
+
+
+    def notify_envelope(self):
+        positions = self.elevator_path_finder()
+        positions_inside_envelope = []
+
+        for position in positions:
+            if position in self.envelope.cells:
+                positions_inside_envelope.append(position)
+                #self.envelope.notifications is attribute for class envelope
+                #which is an empty list that we append positions to
+                self.envelope.notifications.append(position)
+        self.personal_log.append("I have notified the envelope, i need {}".format(positions_inside_envelope))
+
+
+    def notify_to_vector(self):
+        all_possible_vectors = []
+        if self.notification_inbox:
+            for position in self.notification_inbox:
+                vectors = vectors_away_from_a_position(position)
+                all_possible_vectors += vectors
+                #this added all vectors to all possible vectors
+
         # this function should send a notification for the neighbor we're trying to pass through
         # this means every person should have a personal attribute called self.notification
         # and this function will append stuff to this list
@@ -1583,6 +1701,7 @@ class Person:
 
             # the positions that I want my neighbor to clear out
             # or the vectors that the neigbor should try to move to?
+                #these are perp. vectors to destionation vector
 
             # in both cases we need to write a function that finds the vector
             # a person should move to in order to clear out some positions

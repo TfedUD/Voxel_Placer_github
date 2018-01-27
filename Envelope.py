@@ -11,6 +11,7 @@ class Envelope:
         self.y_span = y_span
         self.z_span = z_span
         self.cells = self.create_cells() # a dictionary
+        self.notifications = []
 
 
     def create_cells(self):
@@ -183,6 +184,8 @@ class Envelope:
 
 
     def place_people(self, people):
+        # refresh notifications
+
         # people are a list of person classes/objects
         # can I define a global variable inside a function?
         self.people = people
@@ -196,7 +199,28 @@ class Envelope:
             #### this refreshes person's conflicts
             #### not the conflic list in the envelope!
             person.refresh_conflicts()
+            person.refresh_notifications_inbox()
 
+
+        ###################_NOTIFICATIONS_#####################
+        # I have an envelope with notifications
+        # and people empty inboxes
+        # I need to send the notifications to the correct people
+        # and then empty my envelope notification list
+        # two lists to match
+        # for position in self.notifications :
+        envelope_notifications_positions = self.notifications
+        for person in self.people:
+            person_cells = person.need()
+            #print("person_cells", person_cells)
+            #print("envelope_notifications_positions", envelope_notifications_positions)
+            for cell in person_cells:
+                if cell in envelope_notifications_positions:
+                    person.notification_inbox.append(cell)
+
+        # emptying notifications before people append new ones
+        self.notifications = []
+        ######################################################
         #### nope!
         #### we need to refresh the envelope too!!!
         self.refresh_cells_states()

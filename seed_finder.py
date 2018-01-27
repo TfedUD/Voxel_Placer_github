@@ -20,6 +20,8 @@ from Schedule import people_dictionary
 # these are from New_Patterns_Dictionary
 
 
+value = "desire" # desire
+
 #### Run Function ####
 import random as r
 
@@ -30,9 +32,11 @@ def run_states(seed):
     r.seed(seed)
 
     # INPUT
-    x_s = 34 #28
+    x_s = 37 #28
     y_s = 1 #9
-    z_s = 34 #28
+    z_s = 37 #28
+
+    mytick = 105
     ticks = 100
 
     # random points generator
@@ -92,7 +96,7 @@ def run_states(seed):
         #factor = 1 # it means every x iteration
         for person in people_classes:
             #print("After factor time is ", tick)
-            person.update_activity_pattern_to(105)
+            person.update_activity_pattern_to(mytick)
             #person.update_activity_pattern_to(int(tick/factor))
 
 
@@ -117,7 +121,7 @@ def run_states(seed):
         # every person will evaluate its current position
         # if it needs to move it will return a movement vector
         for person in people_classes:
-            person.evaluate_position("need")
+            person.evaluate_position(value)
 
 
         # [STEP 4]: outputting
@@ -155,6 +159,7 @@ max_seed = 100
 
 #### running the seed function several times and save the output to a dictionary
 while myseed < max_seed:
+    print("tick_num =", myseed )
     try:
         conflict_num = run_states(myseed)
         conflict_by_seed[myseed] = conflict_num
