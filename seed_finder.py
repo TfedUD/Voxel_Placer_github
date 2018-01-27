@@ -36,7 +36,7 @@ def run_states(seed):
     y_s = 1 #9
     z_s = 37 #28
 
-    mytick = 105
+    mytick = 75
     ticks = 100
 
     # random points generator

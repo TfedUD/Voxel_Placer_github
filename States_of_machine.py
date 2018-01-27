@@ -13,7 +13,7 @@ seed = 0
 r.seed(seed)
 
 # INPUT
-mytick = 105   # what column in the schedule
+mytick = 75   # what column in the schedule
 ticks = 100    # how many times the brain runs
 #########
 x_s = 37 #28

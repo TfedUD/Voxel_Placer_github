@@ -2,23 +2,27 @@ from Person import Person
 from Envelope import Envelope
 from Schedule import people_dictionary
 import random as r
+import time
+
+timestr = time.strftime("%Y%m%d-%H%M")
 
 ###################################################################
 #### ALL INPUTS ##############
-x_s = 30 #28
-y_s = 9 #9
-z_s = 30 #28
+x_s = 37 #28
+y_s = 0 #9
+z_s = 37 #28
 
 ### SEED
-seed = 11
+seed = 0
 r.seed(seed)
 ########## THE RUNNER INPUTS
-tick_start = 80
+tick_start = 73
 tick = tick_start # starting frame of render
-tick_max = 85 # ending frame -# ticks and tick_max are the same
+tick_max = 76 # ending frame -# ticks and tick_max are the same
 evaluation_num = 0 # it will be reset to 0 every tick iteration later
 evaluation_max = 100 # how many times the brain should try to compute positions
 
+value = "desire"  # "desire"
 
 # GENERATING ENVELOPE AND PEOPLE FOR ONE TIME
 # the envelope and people should be already generated here
@@ -114,7 +118,7 @@ while tick < tick_max:
 
         # [3]: People Evaluation of what they got!
         for person in people_classes:
-            person.evaluate_position("desire") #or need?
+            person.evaluate_position(value) #or need?
 
         # [4]: outputting
         # every iteration we output the current state of the envelope and people!
@@ -126,10 +130,19 @@ while tick < tick_max:
         #inside_log_dictionary = all_personal_logs[tick]
 
         conflict_dict = e.cells_in_conflict()
-        conflict_list = []
+        #conflict_list = []
+        conflict_list_need = []
+        conflict_list_desire = []
+
         for key in conflict_dict:
-            conflict_list.append(key.position)
-        state_of_brain["conflicts"] = conflict_list
+            if conflict_dict[key][0] == 100:
+                conflict_list_need.append(key.position)
+            if conflict_dict[key][0] == 1:
+                conflict_list_desire.append(key.position)
+        state_of_brain["conflict_need"] = conflict_list_need
+        state_of_brain["conflict_desire"] = conflict_list_desire
+
+        state_of_brain["notifications"] = envelope.notifications
 
         for person in people:
             # the first
@@ -197,7 +210,7 @@ for t in brain_personal_logs['person_1']:
 ###########################################
 #### writing the file
 
-both_names = "__Final_txt_output/rhino_e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
+both_names = "__Final_txt_output/"+timestr+"rhino_e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -231,7 +244,7 @@ file.write("b_logs = logs")
 ###########################################
 #### writing the file for c4d
 
-c4d_name = "__Final_txt_output/c4d_e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
+c4d_name = "__Final_txt_output/"+timestr+"c4d_e_{}*{}*{}_seed={}_tick_{}to{}_eval={}.txt".format(x_s, y_s, z_s, seed, tick_start,tick_max,evaluation_max)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
