@@ -16,9 +16,9 @@ z_s = 37 #28
 seed = 0
 r.seed(seed)
 ########## THE RUNNER INPUTS
-tick_start = 72
+tick_start = 0
 tick = tick_start # starting frame of render
-tick_max = 78 # ending frame -# ticks and tick_max are the same
+tick_max = 288 # ending frame -# ticks and tick_max are the same
 evaluation_num = 0 # it will be reset to 0 every tick iteration later
 evaluation_max = 100 # how many times the brain should try to compute positions
 
@@ -136,15 +136,27 @@ while tick < tick_max:
             if conflict_dict[key][0] == 1:
                 conflict_list_desire.append(key.position)
 
+        """
         # this is the brain dictionary
-        state_of_brain["conflict_need"] = conflict_list_need
-        state_of_brain["conflict_desire"] = conflict_list_desire
-
-        state_of_brain["notifications"] = envelope.notifications
-
         for person in people:
             # the first
-            state_of_brain[person.name] = [person.activity] + person.claimed_cells
+            key_des = "{}_des".format(person.name)
+            key_min = "{}_min".format(person.name)
+
+            # lists of positions
+            min_list = []
+            des_list = []
+            claimed = person.claimed_cells # list of positions
+            need = person.need() # list of positions for need
+            for position in claimed:
+                if position in need:
+                    min_list.append([position[0], position[1], position[2]])
+                else:
+                    des_list.append([position[0], position[1], position[2]])
+
+            state_of_brain[key_min] = min_list
+            state_of_brain[key_des] = des_list
+            """
             #inside_log_dictionary[person.name] = person.personal_log
 
 
@@ -175,15 +187,28 @@ while tick < tick_max:
     ########################
     e.conflict_resolution()
 
-    # check_me
-    # brain_counter += 1
-    state_of_brain["conflict_need"] = []
-    state_of_brain["conflict_desire"] = []
-    state_of_brain["notifications"] = envelope.notifications
+    # this is the brain dictionary
 
     for person in people:
         # the first
-        state_of_brain[person.name] = [person.activity] + person.claimed_cells
+        key_des = "{}_des".format(person.name)
+        key_min = "{}_min".format(person.name)
+
+        # lists of positions
+        min_list = []
+        des_list = []
+
+        claimed_pos = person.claimed_cells # list of positions
+        need_pos = person.need() # list of positions for need
+
+        for position in claimed_pos:
+            if position in need_pos:
+                min_list.append([position[0], position[1], position[2]])
+            else:
+                des_list.append([position[0], position[1], position[2]])
+
+        state_of_brain[key_min] = min_list
+        state_of_brain[key_des] = des_list
     ########################
 
 
@@ -252,3 +277,64 @@ c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_
 #states_file_name = both_names + "_states_dictionary.txt"
 file = open(c4d_name,"w")
 file.write(str(brain_states))
+
+
+
+###########################################
+# Shervin stuff : old version
+
+
+#Dummy Data/Organized_State_’ + str(state_number) + ‘_computed.txt
+for key in organized_states:
+    # for every key we will write a file of its state of the machine
+    state_file_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/__Shervin/Organized_State_{}_computed.txt".format(key)
+    #state_file_name = "Organized_State:{}_computed_at{}.txt".format(key, evaluation_max)
+
+    # for every key we want to write a dictionary key_person: [positions list]
+    # we need to copy these stuff from the existent dictionary
+    new_dictionary = {}
+    old_dictionary = organized_states[key]
+    for person_key in old_dictionary:
+        # person_key is the person name
+        person_list = old_dictionary[person_key]
+
+        if person_key not in ['conflict_need', 'conflict_desire', 'notifications']:
+            person_positions_only = person_list[1:]
+            new_dictionary[person_key] = person_positions_only
+
+    dictionary_name = "dict_at_{}".format(key)
+
+    file = open(state_file_name,"w")
+    file.write("\n")
+    file.write("#"+state_file_name)
+    file.write("\n")
+    file.write("\n")
+    file.write(dictionary_name + "= "+str(new_dictionary))
+
+
+
+
+###########################################
+# Shervin stuff : new version
+#Dummy Data/Organized_State_’ + str(state_number) + ‘_computed.txt
+
+for key in organized_states:
+    # for every key we will write a file of its state of the machine
+    state_file_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/__Shervin/Organized_State_{}_computed.txt".format(key)
+    #state_file_name = "Organized_State:{}_computed_at{}.txt".format(key, evaluation_max)
+
+    # for every key we want to write a dictionary key_person: [positions list]
+    # we need to copy these stuff from the existent dictionary
+    new_dictionary = {}
+    old_dictionary = organized_states[key]
+    for person_key in old_dictionary:
+        # person_key is the person name
+        person_list = old_dictionary[person_key]
+
+        if person_key not in ['conflict_need', 'conflict_desire', 'notifications']:
+            person_positions_only = person_list
+            new_dictionary[person_key] = person_positions_only
+
+
+    file = open(state_file_name,"w")
+    file.write(str(new_dictionary))

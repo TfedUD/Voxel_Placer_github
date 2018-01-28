@@ -28,6 +28,7 @@ class Envelope:
 
 
     def evaluate_states(self):
+        # this function evaluates the status of the envelope as a whole
         # 1. total size aka num of voxels
         x = self.x_span
         y = self.y_span
@@ -40,14 +41,16 @@ class Envelope:
         # 4. number of cells in conflict
         amount_conflict = len(self.cells_in_conflict_attr)
         # 5. number of empty cells
-        amount_empty = len(self.empty_cells_readable())
+
+        # this may be the reason the cells_in_conflict state was overwritten
+        #amount_empty = len(self.empty_cells_readable())
 
         self.personal_log = []
         self.personal_log.append("Total size aka #of voxels is {}".format(total_size))
         self.personal_log.append("Total # of needed voxels is {}".format(needed_cells))
         self.personal_log.append("Total # of allocated voxels is {}".format(amount_allocated))
         self.personal_log.append("Total # of conflict voxels is {}".format(amount_conflict))
-        self.personal_log.append("Total # of empty voxels is {}".format(amount_empty))
+        #self.personal_log.append("Total # of empty voxels is {}".format(amount_empty))
         return self.personal_log
 
     #___________________________________________________
@@ -154,6 +157,7 @@ class Envelope:
     # it will look like claimed_cells() above but with some changes
 
     def empty_cells(self):
+        # run me only before place_people!!!
         people = self.people
         all_cells = self.all_cells_evaluation(people)[0]
         empty_cells = []
@@ -164,6 +168,7 @@ class Envelope:
 
 
     def empty_cells_readable(self):
+        # run me only before place_people!!!
         people = self.people
         all_cells = self.all_cells_evaluation(people)[1]
         empty_cells = []
@@ -336,6 +341,33 @@ class Envelope:
         #### is this here a good idea or not!!!\
         self.allocated_cells_attr = allocated_cells
         self.cells_in_conflict_attr = cells_in_conflict
+
+
+
+    def conflict_resolution(self):
+        conflicts = self.cells_in_conflict()
+        if conflicts:
+            for conflict_cell in conflicts:
+                # people_in_conflict is a list of people in conflict
+                people_in_conflict = conflicts[conflict_cell][1]
+
+                # we need to find the satisfaction of every person
+
+                least_satisfaction = 1 # the max
+                least_happy = None
+
+                for person in people_in_conflict:
+                    satisfaction = person.satisfaction_value()
+                    if satisfaction < least_satisfaction:
+                        least_satisfaction = satisfaction
+                        least_happy = person
+
+                # so we have the least_happy
+                # we need to give him the cell
+                least_happy.claimed_cells.append(conflict_cell.position)
+
+
+
 
 
 

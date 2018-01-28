@@ -14,7 +14,7 @@ r.seed(seed)
 
 # INPUT
 mytick = 75   # what column in the schedule
-ticks = 100    # how many times the brain runs
+ticks = 100   # how many times the brain runs
 #########
 x_s = 37 #28
 y_s = 1 #9
