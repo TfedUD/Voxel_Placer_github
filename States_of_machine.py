@@ -15,9 +15,9 @@ r.seed(seed)
 mytick = 105   # what column in the schedule
 ticks = 100   # how many times the brain runs
 #########
-x_s = 28 #28
-y_s = 9 #9
-z_s = 28 #28
+x_s = 34 #28
+y_s = 1 #9
+z_s = 34 #28
 
 value = "need"  # "desire"
 #################################################

@@ -64,7 +64,7 @@ class Activity_Pattern:
     def desire(self):
 
         desire = []
-        """
+
 
         rhino_positions = desire_dictionary[self.activity]
         need_positions = self.need()
@@ -81,7 +81,7 @@ class Activity_Pattern:
 
             new_position = (new_x, new_y, new_z)
             desire.append(new_position)
-        """
+
         return desire
 
 
