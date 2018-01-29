@@ -725,6 +725,8 @@ class Person:
             self.move_check = 1
             ### added today
             self.movement_history.append(self.movement_vector)
+            ### check_me!!!
+            self.movement_vector = None
         else:
             self.personal_log.append("DID NOT MOVE!")
             self.move_check = 0

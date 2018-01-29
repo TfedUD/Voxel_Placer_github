@@ -13,20 +13,25 @@ y_s = 1 #9
 z_s = 37 #28
 
 ### SEED
-seed = 0
+seed = 0 # not doing anything if we use ready points
 r.seed(seed)
 ########## THE RUNNER INPUTS
-tick_start = 72
+tick_start = 150
 tick = tick_start # starting frame of render
-tick_max = 78 # ending frame -# ticks and tick_max are the same
+tick_max = 160 # ending frame -# ticks and tick_max are the same
 evaluation_num = 0 # it will be reset to 0 every tick iteration later
 evaluation_max = 100 # how many times the brain should try to compute positions
 
-value = "desire"  # "desire"
+value = "need"  # "desire"
 
 # GENERATING ENVELOPE AND PEOPLE FOR ONE TIME
 # the envelope and people should be already generated here
 
+# these are tested points based on tick 105 after 100 iterations
+
+points = [(20, 0, 31), (31, 0, 28), (16, 0, 23), (16, 0, 0), (31, 0, 0), (6, 0, 17), (32, 0, 20), (29, 0, 10), (14, 0, 13), (17, 0, 31), (20, 0, 15), (36, 0, 4), (1, 0, 0), (4, 0, 27), (9, 0, 1), (4, 0, 10), (24, 0, 24), (22, 0, 8)]
+
+"""
 # POINTS FOR PEOPLE CENTERS
 points = []
 
@@ -37,7 +42,7 @@ for i in range(18):
 
     point = (x, y, z)
     points.append(point)
-
+"""
 #print(points)
 
 # ENVELOPE
@@ -136,6 +141,10 @@ while tick < tick_max:
             if conflict_dict[key][0] == 1:
                 conflict_list_desire.append(key.position)
 
+
+        all_need = []
+
+
         # this is the brain dictionary
         state_of_brain["conflict_need"] = conflict_list_need
         state_of_brain["conflict_desire"] = conflict_list_desire
@@ -146,6 +155,15 @@ while tick < tick_max:
             # the first
             state_of_brain[person.name] = [person.activity] + person.claimed_cells
             #inside_log_dictionary[person.name] = person.personal_log
+
+            # check_me
+            personal_need = person.need()
+            for position in personal_need:
+                if position in person.claimed_cells:
+                    all_need.append(position)
+
+        state_of_brain["all_need"] = all_need
+
 
 
         movement_counter = 0

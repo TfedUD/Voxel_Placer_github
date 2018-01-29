@@ -9,18 +9,18 @@ timestr = time.strftime("%Y%m%d-%H%M")
 #print(timestr)
 #################################################
 #### Run Function ####
-seed = 0
+seed = 47
 r.seed(seed)
 
 # INPUT
-mytick = 75   # what column in the schedule
+mytick = 70   # what column in the schedule
 ticks = 100   # how many times the brain runs
 #########
 x_s = 37 #28
 y_s = 1 #9
 z_s = 37 #28
 
-value = "desire"  # "desire"
+value = "need"  # "desire"
 #################################################
 # random points generator
 points = []
@@ -30,7 +30,7 @@ for i in range(18):
     z = r.randint(0,z_s)
     point = (x, y, z)
     points.append(point)
-#print("points", points)
+print("points1", points)
 ####################################################
 # BEFORE starting the time loop
 # we need to create the Envelope and the People outside the time LOOP
@@ -135,6 +135,17 @@ for tick in range(ticks):
         inside_dictionary[person.name] = [person.activity] + person.claimed_cells
         #inside_log_dictionary[person.name] = person.personal_log
 
+    # check_me : all need inside the main dictioanry
+    all_need = []
+    for person in people:
+        # check_me
+        personal_need = person.need()
+        for position in personal_need:
+            if position in person.claimed_cells:
+                all_need.append(position)
+    inside_dictionary["all_need"] = all_need
+
+
     # NEED DICTIONARY
     person_need_dict = need_dict[tick]
     for person in people:
@@ -146,7 +157,6 @@ for tick in range(ticks):
     for person in people:
         person_desire_dict[person.name] = person.desire()
         #print("person need", person.need_cells)
-
 
 
 
@@ -245,3 +255,9 @@ for i in range(ticks):
     all_list = all_personal_logs["person_15"][i]
     for line in all_list:
         print(line)
+
+points2 = []
+for person in people:
+    points2.append(person.position)
+
+print("points2", points2)
