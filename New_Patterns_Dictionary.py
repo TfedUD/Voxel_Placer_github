@@ -1,4 +1,4 @@
-
+"""
 #################################
 # 2d
 # need 2d
@@ -24,12 +24,8 @@ need_dictionary = (dict_from_file)
 with open('__Input_dictionaries/Dictionary_3d_test_DESIRE.txt','r') as inf:
     dict_from_file = eval(inf.read())
 desire_dictionary = (dict_from_file)
-"""
 
 #################################
-
-
-
 
 class Activity_Pattern:
     def __init__(self, activity, position):
@@ -68,6 +64,7 @@ class Activity_Pattern:
     def desire(self):
 
         desire = []
+        """
 
         rhino_positions = desire_dictionary[self.activity]
         need_positions = self.need()
@@ -84,13 +81,8 @@ class Activity_Pattern:
 
             new_position = (new_x, new_y, new_z)
             desire.append(new_position)
-
+        """
         return desire
-
-
-
-
-
 
 
 

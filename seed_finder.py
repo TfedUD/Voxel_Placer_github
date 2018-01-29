@@ -20,7 +20,7 @@ from Schedule import people_dictionary
 # these are from New_Patterns_Dictionary
 
 
-value = "desire" # desire
+value = "need" # desire
 
 #### Run Function ####
 import random as r
@@ -32,11 +32,11 @@ def run_states(seed):
     r.seed(seed)
 
     # INPUT
-    x_s = 37 #28
-    y_s = 1 #9
-    z_s = 37 #28
+    x_s = 34 #28
+    y_s = 9 #9
+    z_s = 34 #28
 
-    mytick = 75
+    mytick = 105
     ticks = 100
 
     # random points generator

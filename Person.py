@@ -186,7 +186,7 @@ class Person:
 
 
     def satisfaction_value(self):
-        happiness_level = len(self.claimed_cells) / len(self.desire())
+        happiness_level = len(self.claimed_cells) / len(self.need())
         return happiness_level
 
 
