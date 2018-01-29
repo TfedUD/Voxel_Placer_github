@@ -1,4 +1,4 @@
-"""
+
 #################################
 # 2d
 # need 2d
@@ -24,7 +24,7 @@ need_dictionary = (dict_from_file)
 with open('__Input_dictionaries/Dictionary_3d_test_DESIRE.txt','r') as inf:
     dict_from_file = eval(inf.read())
 desire_dictionary = (dict_from_file)
-
+"""
 #################################
 
 class Activity_Pattern:
