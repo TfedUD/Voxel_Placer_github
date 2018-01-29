@@ -63,6 +63,7 @@ class Person:
         self.vectors_away_from_neighbors_BOTH = []
 
         self.previous_claimed_positions = []
+        self.brain_counter = 0
 
     def introduce_person(self):
 
@@ -183,6 +184,12 @@ class Person:
 
         return self.satisfaction_log
 
+
+    def satisfaction_value(self):
+        happiness_level = len(self.claimed_cells) / len(self.desire())
+        return happiness_level
+
+
     #___________________________________________________
     #________________Activity_Methods___________________
     #___________________________________________________
@@ -202,6 +209,8 @@ class Person:
 
         # setting a time attribute
         self.time = time
+
+        # check_me
 
         # time is a number!
         # every iteration will be five mins for now then!
@@ -349,7 +358,10 @@ class Person:
         target_cloud = self.desire()
         extra_layer = self.find_immmediate_border(current_cloud,target_cloud)
 
-        all_to_claim = current_cloud + extra_layer
+        if self.brain_counter < 5:
+            all_to_claim = current_cloud
+        else:
+            all_to_claim = current_cloud + extra_layer
         # what are we going to ask the envelope for is the current cloud (claimed)
         # and the extra layer
         # and they should be in pattern heiracy format
@@ -364,6 +376,7 @@ class Person:
             if position in self.need():
                 actitivy_cell_value[position] = need_value
 
+        self.brain_counter += 1
         return actitivy_cell_value
 
     def pattern_heirarchy(self):
@@ -712,6 +725,8 @@ class Person:
             self.move_check = 1
             ### added today
             self.movement_history.append(self.movement_vector)
+            ### check_me!!!
+            self.movement_vector = None
         else:
             self.personal_log.append("DID NOT MOVE!")
             self.move_check = 0
