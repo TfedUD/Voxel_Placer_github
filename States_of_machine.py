@@ -8,7 +8,7 @@ timestr = time.strftime("%Y%m%d-%H%M")
 #print(timestr)
 #################################################
 #### Run Function ####
-seed = 12
+seed = 47
 r.seed(seed)
 
 # INPUT
@@ -19,7 +19,7 @@ x_s = 34 #28
 y_s = 1 #9
 z_s = 34 #28
 
-value = "need"  # "desire"
+value = "desire"  # "desire"
 #################################################
 # random points generator
 
