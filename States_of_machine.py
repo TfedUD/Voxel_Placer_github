@@ -13,11 +13,11 @@ r.seed(seed)
 
 # INPUT
 mytick = 105   # what column in the schedule
-ticks = 8   # how many times the brain runs
+ticks = 100   # how many times the brain runs
 #########
-x_s = 34 #28
-y_s = 9 #9
-z_s = 34 #28
+x_s = 37 #28
+y_s = 1 #9
+z_s = 37#28
 
 value = "desire"  # "desire"
 #################################################
