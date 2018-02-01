@@ -13,16 +13,16 @@ y_s = 1 #9
 z_s = 34 #28
 
 ### SEED
-seed = 0 # not doing anything if we use ready points
+seed = 12 # not doing anything if we use ready points
 r.seed(seed)
 ########## THE RUNNER INPUTS
-tick_start = 150
+tick_start = 227
 tick = tick_start # starting frame of render
-tick_max = 160 # ending frame -# ticks and tick_max are the same
+tick_max = 288 # ending frame -# ticks and tick_max are the same
 evaluation_num = 0 # it will be reset to 0 every tick iteration later
-evaluation_max = 100 # how many times the brain should try to compute positions
+evaluation_max = 30 # how many times the brain should try to compute positions
 
-value = "need"  # "desire"
+value = "desire"  # "desire"
 
 # GENERATING ENVELOPE AND PEOPLE FOR ONE TIME
 # the envelope and people should be already generated here
