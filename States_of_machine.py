@@ -13,13 +13,13 @@ r.seed(seed)
 
 # INPUT
 mytick = 105   # what column in the schedule
-ticks = 8   # how many times the brain runs
+ticks = 100   # how many times the brain runs
 #########
 x_s = 34 #28
 y_s = 9 #9
 z_s = 34 #28
 
-value = "desire"  # "desire"
+value = "need"  # "desire"
 #################################################
 # random points generator
 
@@ -32,6 +32,7 @@ for i in range(18):
     z = r.randint(0,z_s)
     point = (x, y, z)
     points.append(point)
+
 print("points1", points)
 
 ####################################################
@@ -217,8 +218,8 @@ for person in people:
 
 #### writing the file
 
-both_names = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
-#both_names = "/Users/abuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_sd={}_val={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+#both_names = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+both_names = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"rhino_tick_{}*{}_e_{}*{}*{}_sd={}_val={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 
 #states_file_name = both_names + "_states_dictionary.txt"
@@ -273,8 +274,8 @@ file.write("c_desire = desire_pos")
 ####################################################
 
 # writing files for c4d
-c4d_name = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
-#c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+#c4d_name = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+c4d_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 #states_file_name = both_names + "_states_dictionary.txt"
 
@@ -282,7 +283,7 @@ file = open(c4d_name,"w")
 file.write(str(states_of_machine))
 
 ####################################################
-log_name = "/Users/karimdaw/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}_log.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
+log_name = "/Users/nourabuzaid/Google Drive/VoxelPlacer/__Output/"+timestr+"c4d_tick_{}*{}_e_{}*{}*{}_seed={}_value={}_log.txt".format(mytick,ticks, x_s, y_s, z_s, seed, value)
 #### writing the dictionary into a text file!
 file = open(log_name,"w")
 file.write(str(all_personal_logs))

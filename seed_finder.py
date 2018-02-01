@@ -15,7 +15,6 @@ from Schedule import people_dictionary
 
 > I take the min_seed from here and use it as an input for the other file run
 """
-
 ###################################################################
 # these are from New_Patterns_Dictionary
 
